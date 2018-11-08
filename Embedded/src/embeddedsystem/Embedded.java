@@ -110,6 +110,10 @@ public class Embedded {
         //Print
         printNeighbors(s3,neighborhood);
         
+        
+        //test distance between two sensors - Remove it
+        s1.distanceBetweenSensors(s2);
+        
     }
     
     static void activateNeighbors(Sensor currentSensor){
