@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 /**
@@ -31,7 +32,7 @@ public class MyCanvas {
         Graphics g = surface.getGraphics();
         g.setColor(Color.ORANGE);
         g.fillRect(0,0,800,700);
-        g.setColor(Color.BLACK);
+      //  g.setColor(Color.GREEN);
         
         g.dispose();
     }
@@ -42,42 +43,115 @@ public class MyCanvas {
         g.dispose();
         view.repaint();
     }
+     public ArrayList<Sensor> getSensorList(){
+         return sensorList;
+     }
      public void changeElement(){
            Graphics g = surface.getGraphics();
-            Sensor s=sensorList.get(0);
+            Sensor s=sensorList.get(7);
             g.setColor(Color.red);
            fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 5);
            
             g.dispose();
             view.repaint();
      }
-     
-     public void fillSensorList(){
-         String type="t";
-         int  ratio=40;
-         int[] arrayPositionX = {50,50,250,250,220, 80,30,10,60,80,20,20,90,115,150};
-         int[] arrayPositionY ={150,50,50,150,100,100,160,180,130,110,120,190,140,140,100};
+     public void test(ArrayList<Sensor> n) throws InterruptedException{
+          Graphics g = surface.getGraphics();
+      
+         Sensor neighbour;
+         g.setColor(Color.red);
+         for(int i=0;i<n.size();i++){
+          neighbour=n.get(i);
+          //TimeUnit.SECONDS.sleep(1);
+          if(neighbour.getTypeOfSensor().equalsIgnoreCase("fs")){
+              fillCenteredCircle((Graphics2D) g,neighbour.getPositionX(),neighbour.getPositionY(), 7);
+          }else{
+              if(neighbour.getState()){
+                  
+              }else{
+              neighbour.setActive(true);
+              fillCenteredCircle((Graphics2D) g,neighbour.getPositionX(),neighbour.getPositionY(), 5);
+             // TimeUnit.SECONDS.sleep(1);
+              test(neighbour.getNeighbourSeonsor());
+           
+           
+               g.dispose();
+            view.repaint();
+              }
+         }
+         }
+           
+     }
+     public void fireDetection(Sensor s) throws InterruptedException{
+         Graphics g = surface.getGraphics();
+      
+         Sensor neighbour;
+         g.setColor(Color.red);
+         fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 5);
          
-         for(int i=0;i<arrayPositionX.length;i++){
-         sensorList.add(new Sensor(arrayPositionX[i],arrayPositionY[i],type,ratio));
+           for(int i=0;i<s.getNeighborNumber();i++){
+            neighbour=s.getNeighbourSeonsor().get(i);
+            if(neighbour.getTypeOfSensor().equalsIgnoreCase("fs")){
+                fillCenteredCircle((Graphics2D) g,neighbour.getPositionX(),neighbour.getPositionY(), 7);
+            }else{
+                if(neighbour.getState()){
+                    
+                }else{
+                neighbour.setActive(true);
+                fillCenteredCircle((Graphics2D) g,neighbour.getPositionX(),neighbour.getPositionY(), 5);
+                g.dispose();
+                view.repaint();
+                 test(neighbour.getNeighbourSeonsor());
+                 } 
+            }
+            
+            }
+           
+      
+         
+          
+        
+     }
+     public void weatherChange(int power){
+           Graphics g = surface.getGraphics();
+         Sensor s;
+      g.setColor(Color.ORANGE);
+        g.fillRect(0,0,800,700);
+        
+         for(int i=0;i<sensorList.size(); i++){
+         s=sensorList.get(i);
+         s.setRatio(s.ratio-power);
+        // drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), (s.ratio-power));
          }
          
+         drawSensor();
+          g.dispose();
+            view.repaint();
+     }
+     
+     public void fillSensorList(){
          
-         
-        
+         Embedded.createListSensors(sensorList);
+ 
     }
     
      public void drawSensor(){
           Graphics g = surface.getGraphics();
          Sensor s;
             
-            for(int i=0;i<sensorList.size(); i++){
+            for(int i=0;i<sensorList.size()-1; i++){
                 s=sensorList.get(i);
                 g.setColor(Color.RED);
                drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.ratio);
                 g.setColor(Color.BLACK);
                 fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 5);
             }
+             s=sensorList.get(sensorList.size()-1);
+                g.setColor(Color.BLUE);
+               drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.ratio);
+                g.setColor(Color.BLACK);
+                fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
+            
      }
         public void fillCenteredCircle(Graphics2D g, int x, int y, int r) {
         x = x-(r/2);
