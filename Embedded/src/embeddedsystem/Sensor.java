@@ -18,11 +18,14 @@ public class Sensor {
     int y;
     String typeOfSensor;
     int ratio;
-    boolean active;
+    boolean active;//working or not
     ArrayList<Sensor> neighbourSensor;
     ArrayList<Double> neighborDistance;
     Double[] nd;
+    boolean detrectFire; //if the sensor detected fire
+    boolean forwardMsg; //if the sensor got a msg
     
+            
     public Sensor(int xP,int YP,String tS, int ratioN){
         x= xP;
         y=YP;
@@ -44,7 +47,7 @@ public class Sensor {
         y=YN;
     }
     
-    public void setActive(boolean state){
+    public void setState(boolean state){
         active=state;
     }
     public boolean getState(){
@@ -57,10 +60,33 @@ public class Sensor {
         return ratio;
     }
     
+      public String getTypeOfSensor(){
+        return typeOfSensor;
+    }
+      public void setForwardMsg(boolean msg){
+          forwardMsg=msg;
+      }
+      public boolean getForwardMsg(){
+          return forwardMsg;
+      }
+      public void setDetrectFire(boolean fire){
+          detrectFire=fire;
+      }
+      public boolean getDetectFire(){
+          return detrectFire;
+      }
+     
+  
+  
+  
+    
     public void setNeighbourSeonsor(ArrayList<Sensor> newNeighbours){
         neighbourSensor=new ArrayList(newNeighbours);
     }
     
+    public ArrayList<Sensor> getNeighbourSeonsor(){
+        return neighbourSensor;
+    }
     public int getNeighborNumber(){
         return neighbourSensor.size();
     }

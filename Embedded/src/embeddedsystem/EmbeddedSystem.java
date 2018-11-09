@@ -83,7 +83,7 @@ public class EmbeddedSystem {
         @Override
         public void run() {
            
-            Sensor s= canvas.getSensorList().get(3);
+            Sensor s= canvas.getSensorList().get(8);
             try {
                 canvas.fireDetection(s);
             } catch (InterruptedException ex) {

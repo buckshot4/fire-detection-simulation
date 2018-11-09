@@ -32,6 +32,8 @@ public class MyCanvas {
         Graphics g = surface.getGraphics();
         g.setColor(Color.ORANGE);
         g.fillRect(0,0,800,700);
+        
+   
       //  g.setColor(Color.GREEN);
         
         g.dispose();
@@ -69,7 +71,7 @@ public class MyCanvas {
               if(neighbour.getState()){
                   
               }else{
-              neighbour.setActive(true);
+              neighbour.setState(true);
               fillCenteredCircle((Graphics2D) g,neighbour.getPositionX(),neighbour.getPositionY(), 5);
              // TimeUnit.SECONDS.sleep(1);
               test(neighbour.getNeighbourSeonsor());
@@ -97,7 +99,7 @@ public class MyCanvas {
                 if(neighbour.getState()){
                     
                 }else{
-                neighbour.setActive(true);
+                neighbour.setState(true);
                 fillCenteredCircle((Graphics2D) g,neighbour.getPositionX(),neighbour.getPositionY(), 5);
                 g.dispose();
                 view.repaint();
@@ -139,10 +141,12 @@ public class MyCanvas {
           Graphics g = surface.getGraphics();
          Sensor s;
             
+          
             for(int i=0;i<sensorList.size()-1; i++){
                 s=sensorList.get(i);
                 g.setColor(Color.RED);
                drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.ratio);
+               System.out.println(s.ratio);
                 g.setColor(Color.BLACK);
                 fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 5);
             }
