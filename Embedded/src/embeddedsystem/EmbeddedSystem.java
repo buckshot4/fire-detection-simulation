@@ -29,6 +29,7 @@ public class EmbeddedSystem {
      */
     public static void main(String[] args) {
         MyCanvas canvas = new MyCanvas();
+        //canvas.fillSensorList();
         canvas.fillSensorList();
         canvas.drawSensor();
         JFrame window= new JFrame();

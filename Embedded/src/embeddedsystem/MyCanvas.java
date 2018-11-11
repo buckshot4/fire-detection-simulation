@@ -136,6 +136,13 @@ public class MyCanvas {
          Embedded.createListSensors(sensorList);
  
     }
+     
+     public void fillSensorList1(){
+         
+     	//(sensorlist, amountof sensors, width, height, radius)
+         Embedded.createSensorGrid(sensorList, 50, 400, 400, 150);
+
+    }
     
      public void drawSensor(){
           Graphics g = surface.getGraphics();

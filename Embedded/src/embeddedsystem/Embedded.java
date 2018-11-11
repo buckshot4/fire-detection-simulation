@@ -19,6 +19,61 @@ import java.util.Map;
  * @author Superkey
  */
 public class Embedded {
+	
+	//creates a grid of sensors
+	public static void createSensorGrid(ArrayList<Sensor> sensorList, int amountOfSensors, int width, int height, int radius) {
+		 Map<Sensor, ArrayList> neighborhood = new HashMap<>();
+       //int height = 500;
+       //int width = 500;
+       //int radius = 200;
+       //int amountOfSensors = 50;
+		int firestation = amountOfSensors/2;
+		int fsX = height/2;
+		int fsY= width/2;
+       int count = 0;
+       
+       int amountOfSensors1 = (int) Math.sqrt(amountOfSensors);
+   	int heightspace = height/amountOfSensors1;
+   	int widthspace = width/amountOfSensors1;
+   	Sensor sensor[] = new Sensor[amountOfSensors];
+
+   	
+       for(int i = 0; i<amountOfSensors1; i++) {
+       for(int j = 0; j<amountOfSensors1; j++) {
+        	String x = "sN"+ Integer.toString(count);
+       	sensor[count] = new Sensor(i*heightspace, j*widthspace, x, radius);
+       	sensorList.add(sensor[count]);
+       	count++;
+       	//System.out.println(sensor[i].typeOfSensor);
+       	//String x = "sN"+ Integer.toString(i);
+       }
+       }
+       
+       sensor[amountOfSensors] = new Sensor(fsX, fsY, "fs", radius);
+       
+       System.out.println(sensor[firestation].typeOfSensor);
+       
+       /*
+       for(int i = 0; i<49; i++) {
+       	System.out.println(sensor[i].typeOfSensor);
+       }
+       */
+       
+   	
+       for(int i = 0; i<49; ++i)  {
+       for(int j = 0; j<49; ++j) {
+        	//System.out.println(sensor[i].typeOfSensor);
+        	//System.out.println(sensor[j].typeOfSensor);
+       	if(sensor[i].distanceBetweenSensors(sensor[j]) < radius && sensor[i] != sensor[j]) 
+       	{
+       		//System.out.println(sensor[j].typeOfSensor);
+       		//System.out.println("sup");
+       		sensor[i].neighbourSensor.addAll(Arrays.asList(sensor[j]));    
+       		neighborhood.put(sensor[i], sensor[j].neighbourSensor);
+       	}
+       }
+       }	
+}
 
     
     public static void createListSensors(ArrayList<Sensor> sensorList){
