@@ -8,6 +8,7 @@ package embeddedsystem;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Sensor {
@@ -20,6 +21,9 @@ public class Sensor {
     ArrayList<Double> neighborDistance;
     Double[] nd;
     ShortestPathList spl;
+    int delay=5;
+    boolean forwardMsg;
+    boolean detectFire;
     
     public Sensor(int xP,int YP,String tS, int ratioN){
         x= xP;
@@ -28,6 +32,7 @@ public class Sensor {
         radious=ratioN;
         neighbourSensor= new ArrayList();
         neighborDistance = new ArrayList();
+        spl=new ShortestPathList();
         
     } 
     public int getPositionX(){
@@ -43,7 +48,7 @@ public class Sensor {
         y=YN;
     }
     
-    public void setActive(boolean state){
+    public void setState(boolean state){
         active=state;
     }
     public boolean getState(){
@@ -63,7 +68,9 @@ public class Sensor {
     public int getNeighborNumber(){
         return neighbourSensor.size();
     }
-    
+    public String getTypeOfSensor(){
+        return typeOfSensor;
+    }
     
     //////////////////////////////
    /* SHORTEST PATH CODE BLOCK */
@@ -75,7 +82,9 @@ public class Sensor {
         }
     }
     
-    
+    public  ArrayList<Sensor> getNeighbourSeonsor(){
+        return  neighbourSensor;
+    }
     
     public double distanceBetweenSensors(Sensor otherSensor){
         
@@ -110,7 +119,7 @@ public class Sensor {
     //Routing - SP
     public void shortestPath(Sensor target, ArrayList<Double> neighborDistanceMatrix, ShortestPathList spl){
         
-        this.setActive(true);
+        this.setState(true);
         System.out.println(this.typeOfSensor + " just became "+ this.getState());
         
         //System.out.println("Shortest path ...");
@@ -165,6 +174,13 @@ public class Sensor {
         
 
         
+    }
+      public void randomFail(ArrayList<Sensor> arraySensors,int howMany){
+        Random random= new Random();
+        for(int i=0;i<howMany;i++){
+        int n=random.nextInt(arraySensors.size());
+        arraySensors.get(n).setState(false);
+        }
     }
     
     public void pingNeigbors(ArrayList<Sensor> origin){

@@ -126,7 +126,7 @@ public class MyCanvas {
         
          for(int i=0;i<sensorList.size(); i++){
          s=sensorList.get(i);
-         s.setRatio(s.ratio-power);
+         s.setRatio(s.radious-power);
         // drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), (s.ratio-power));
          }
          
@@ -151,14 +151,14 @@ public class MyCanvas {
             for(int i=0;i<sensorList.size()-1; i++){
                 s=sensorList.get(i);
                 g.setColor(Color.BLACK);
-               drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.ratio);
-               System.out.println(s.ratio);
+               drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
+               System.out.println(s.radious);
                 g.setColor(Color.BLACK);
                 fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 5);
             }
              s=sensorList.get(sensorList.size()-1);
                 g.setColor(Color.BLUE);
-               drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.ratio);
+               drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
                 g.setColor(Color.BLACK);
                 fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
            
