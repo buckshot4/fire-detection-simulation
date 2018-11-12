@@ -27,9 +27,9 @@ public class Embedded {
        //int width = 500;
        //int radius = 200;
        //int amountOfSensors = 50;
-		int firestation = amountOfSensors/2;
-		int fsX = height/2;
-		int fsY= width/2;
+        int firestation = amountOfSensors/2;
+	int fsX = height/2;
+	int fsY= width/2;
        int count = 0;
        
        int amountOfSensors1 = (int) Math.sqrt(amountOfSensors);
@@ -49,9 +49,9 @@ public class Embedded {
        }
        }
        
-       sensor[amountOfSensors] = new Sensor(fsX, fsY, "fs", radius);
+       sensor[amountOfSensors-1] = new Sensor(fsX, fsY, "fs", radius);
        
-       System.out.println(sensor[firestation].typeOfSensor);
+       //System.out.println(sensor[firestation].typeOfSensor);
        
        /*
        for(int i = 0; i<49; i++) {
@@ -60,8 +60,8 @@ public class Embedded {
        */
        
    	
-       for(int i = 0; i<49; ++i)  {
-       for(int j = 0; j<49; ++j) {
+       for(int i = 0; i<amountOfSensors; ++i)  {
+       for(int j = 0; j<amountOfSensors; ++j) {
         	//System.out.println(sensor[i].typeOfSensor);
         	//System.out.println(sensor[j].typeOfSensor);
        	if(sensor[i].distanceBetweenSensors(sensor[j]) < radius && sensor[i] != sensor[j]) 
@@ -178,7 +178,7 @@ public class Embedded {
         
     }
             
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         
         int numOfSensors = 12;
         ArrayList<Sensor> neighbors = new ArrayList<>();
@@ -238,7 +238,7 @@ public class Embedded {
         Double[] s11ND = new Double[] {35.0,38.078};
         Double[] fsND = new Double[] {32.015, 36.055};
         
-    /*    s1.neighborDistance.addAll(Arrays.asList(s1ND));
+      s1.neighborDistance.addAll(Arrays.asList(s1ND));
         s2.neighborDistance.addAll(Arrays.asList(s2ND));
         s3.neighborDistance.addAll(Arrays.asList(s3ND));
         s4.neighborDistance.addAll(Arrays.asList(s4ND));
@@ -250,7 +250,7 @@ public class Embedded {
         s10.neighborDistance.addAll(Arrays.asList(s10ND));
         s11.neighborDistance.addAll(Arrays.asList(s11ND));
         fs.neighborDistance.addAll(Arrays.asList(fsND));
-        */
+        
         neighborhood.put(s1, s1.neighbourSensor);
         neighborhood.put(s2, s2.neighbourSensor);
         neighborhood.put(s3, s3.neighbourSensor);
@@ -269,7 +269,7 @@ public class Embedded {
         //Print
         printNeighbors(s3,neighborhood);
         
-    }
+    }*/
     
     static void activateNeighbors(Sensor currentSensor){
         //System.out.println(currentSensor.);

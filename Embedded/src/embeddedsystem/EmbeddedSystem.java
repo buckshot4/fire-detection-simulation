@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import static java.nio.file.Files.size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,80 +17,109 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static javafx.beans.binding.Bindings.size;
+import static javafx.beans.binding.Bindings.size;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 /**
  *
  * @author eleonora
  */
 public class EmbeddedSystem {
 
-
-    /**
-     * @param args the command line arguments
-     */
+ private static MYTimer timer;
+ 
+ private MyCanvas canvas;
+ private JFrame window;
+    
+ 
+ public EmbeddedSystem(){
+       canvas = new MyCanvas();
+         window= new JFrame();
+        
+        
+ }
     public static void main(String[] args) {
-        MyCanvas canvas = new MyCanvas();
-        //canvas.fillSensorList();
-        canvas.fillSensorList1();
-        canvas.drawSensor();
-        JFrame window= new JFrame();
-        window.setSize(1000,900);
-        window.setTitle("Embedded");
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setContentPane(canvas.view);
+       
+        EmbeddedSystem emb=new EmbeddedSystem();
+           JLabel seconds= new JLabel();
+            JLabel minutes= new JLabel();
+      JLabel milli= new JLabel();
+        timer=new MYTimer(emb,minutes,seconds,milli);
+        emb.canvas.fillSensorList();
+        emb.canvas.drawSensor();
+     
+        emb.window.setSize(1000,900);
+        emb.window.setTitle("Embedded");
+         emb.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         emb.window.setContentPane( emb.canvas.view);
        // window.pack();
-        window.setLocationByPlatform(true);
-        window.setVisible(true);
+         emb.window.setLocationByPlatform(true);
+         emb.window.setVisible(true);
+      
+        
         JButton button = new JButton("weather");
        button.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.print("works");
-                canvas.weatherChange(20);
+               
+               //  emb.canvas.weatherChange(20);
+                 emb.canvas.setFire();
                 
             }
            
        });
        button.setBounds(900,10,200,30);
-       window.getContentPane().add(button);
-        
-       timeSchedule(canvas);
-       
-     /*  
-         Timer timer = new Timer();
+        emb.window.getContentPane().add(button);
+         emb.window.getContentPane().add(seconds);
+         emb.window.getContentPane().add(minutes);
+          emb.window.getContentPane().add(milli);
          
-         TimerTask task = new TimerTask() {
+         minutes.setBounds(900,40,200,30);
+         seconds.setBounds(920,40,200,30);
+          milli.setBounds(940, 40, 200, 30);
+         timer.startTimer();
+   
+   
+         
+         emb.fireSpread(emb.canvas);
+        
+    }
+      public void update(long dT){
+        // convert milliseconds into other forms
+        
+        
+        timer.getMinutesLabel().setText(String.valueOf((dT / (1000*60)) % 60)+"  :");
+        timer.getsecondLabel().setText(String.valueOf((dT / 1000) % 60 ) + " : ");
+        timer.getMilliseconds().setText(String.valueOf((dT)%1000));
+    }
+          
+    public void fireSpread(MyCanvas canvas){
+        Timer t= new Timer();
+            TimerTask task = new TimerTask() {
         @Override
         public void run() {
-           
-            Sensor s= canvas.getSensorList().get(1);
-           canvas.fireDetection(s);
+           canvas.setFire();
+        
            
         }
     };
-       timer.schedule(task, 4200);
-           
-  
-       */
-   
-    
-
-        
-    
+              
+       t.schedule(task, 2000,900);
         
     }
-    public  static void timeSchedule(MyCanvas canvas){
+      
+    
+    public void timeSchedule(MyCanvas canvas){
         Timer t= new Timer();
             TimerTask task = new TimerTask() {
         @Override
         public void run() {
            
-            Sensor s= canvas.getSensorList().get(8);
-            try {
-                canvas.fireDetection(s);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(EmbeddedSystem.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Sensor s= canvas.getSensorList().get(5);
+            Sensor s2= canvas.getSensorList().get(9);
+            //canvas.fireDetection(s);
+            canvas.drawLine(s, s2);
            
         }
     };

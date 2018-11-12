@@ -8,6 +8,7 @@ package embeddedsystem;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  *
@@ -18,6 +19,7 @@ public class Sensor {
     int y;
     String typeOfSensor;
     int ratio;
+    //int fireDetectionRatio;
     boolean active;//working or not
     ArrayList<Sensor> neighbourSensor;
     ArrayList<Double> neighborDistance;
@@ -62,7 +64,7 @@ public class Sensor {
       		}
       		}
       		//the state of the currentsensor is changed so it cannot be added to the queue again. 
-      		currentSensor.setActive(true);
+      		currentSensor.setState(true);
 
   		System.out.println(" ");
       	

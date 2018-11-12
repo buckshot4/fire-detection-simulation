@@ -17,24 +17,23 @@ import javax.swing.*;
  * @author eleonora
  */
 public class MyCanvas {
-     JLabel view;
+    JLabel view;
     BufferedImage surface;
     private  ArrayList<Sensor> sensorList;
-    
+    private Fire fire;
     public MyCanvas(){
         
        
          sensorList = new ArrayList();
-         
-        surface = new BufferedImage(600,400,BufferedImage.TYPE_INT_RGB);
+            fire= new Fire(50,50,20);
+        surface = new BufferedImage(700,600,BufferedImage.TYPE_INT_RGB);
         
         view = new JLabel(new ImageIcon(surface));
         Graphics g = surface.getGraphics();
-        g.setColor(Color.ORANGE);
-        g.fillRect(0,0,800,700);
+       g.setColor(Color.GREEN);
+        g.fillRect(0,0,700,600);
         
    
-      //  g.setColor(Color.GREEN);
         
         g.dispose();
     }
@@ -109,11 +108,16 @@ public class MyCanvas {
             
             }
            
-      
-         
-          
         
      }
+     public void drawLine(Sensor s1,Sensor s2){
+         Graphics g = surface.getGraphics();
+          g.setColor(Color.BLUE);
+           g.drawLine(s1.x, s1.y, s2.x, s2.y);
+        g.dispose();
+        view.repaint();
+     }
+     
      public void weatherChange(int power){
            Graphics g = surface.getGraphics();
          Sensor s;
@@ -132,26 +136,21 @@ public class MyCanvas {
      }
      
      public void fillSensorList(){
-         
-         Embedded.createListSensors(sensorList);
+         //(sensorlist, amountof sensors, width, height, radius)
+         Embedded.createSensorGrid(sensorList,50,400,400,250);
+         //700 and 600 are the current value of the width and height of the forest
  
     }
      
-     public void fillSensorList1(){
-         
-     	//(sensorlist, amountof sensors, width, height, radius)
-         Embedded.createSensorGrid(sensorList, 50, 400, 400, 150);
 
-    }
     
      public void drawSensor(){
           Graphics g = surface.getGraphics();
          Sensor s;
-            
-          
+       
             for(int i=0;i<sensorList.size()-1; i++){
                 s=sensorList.get(i);
-                g.setColor(Color.RED);
+                g.setColor(Color.BLACK);
                drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.ratio);
                System.out.println(s.ratio);
                 g.setColor(Color.BLACK);
@@ -162,7 +161,7 @@ public class MyCanvas {
                drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.ratio);
                 g.setColor(Color.BLACK);
                 fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
-            
+           
      }
         public void fillCenteredCircle(Graphics2D g, int x, int y, int r) {
         x = x-(r/2);
@@ -174,6 +173,19 @@ public class MyCanvas {
          y = y-(r/2);
          g.drawOval(x,y,r,r);
     }
+     
+     public void setFire(){
+          Graphics g = surface.getGraphics();
+         Color c=new Color(1f,0f,0f,.1f );
+         g.setColor(c);
+         fillCenteredCircle((Graphics2D) g,fire.getPositionX(),fire.getPositonY(),fire.getRange());
+         fire.setRange((fire.getRange()+20));
+            g.dispose();
+            view.repaint();
+     }
+ 
+     
+     
    /*  
       public void cluster(int numberCluster, Graphics g){
        int X;
