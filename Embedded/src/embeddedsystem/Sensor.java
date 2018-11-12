@@ -8,83 +8,28 @@ package embeddedsystem;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-/**
- *
- * @author eleonora
- */
+
 public class Sensor {
     int x;
     int y;
     String typeOfSensor;
-    int ratio;
-    //int fireDetectionRatio;
-    boolean active;//working or not
+    int radious;
+    boolean active;
     ArrayList<Sensor> neighbourSensor;
     ArrayList<Double> neighborDistance;
     Double[] nd;
-    boolean detrectFire; //if the sensor detected fire
-    boolean forwardMsg; //if the sensor got a msg
-    static LinkedList<Sensor> queue = new LinkedList<Sensor>(); 
+    ShortestPathList spl;
     
-            
     public Sensor(int xP,int YP,String tS, int ratioN){
         x= xP;
         y=YP;
         typeOfSensor=tS;
-        ratio=ratioN;
+        radious=ratioN;
         neighbourSensor= new ArrayList();
         neighborDistance = new ArrayList();
+        
     } 
-    
-  //used to broadcast the message of fire and storing the sensor where the fire is detected. 
-  //and then the broadcast method is called. 
-  public static void BCM(Sensor currentSensor, Sensor fs) {
-  	Sensor fireStart = currentSensor;
-  	BC(currentSensor, fs ,fireStart);    	
-  }
-
-  //broadcast firedetection.
-      public static void BC(Sensor currentSensor, Sensor fs, Sensor firestart) {
-      	Sensor neighbor;
-      	Sensor s;
-      	int numOfNeighbors1 = currentSensor.getNeighborNumber();
-
-      	System.out.println(" ");
-  		System.out.println(currentSensor.typeOfSensor+" ");     
-      	
-  		//goes through all neighbors and adds them to the queue if their state is not active/false. 
-      		for(int i = 0; i < numOfNeighbors1; ++i){    
-      		neighbor = currentSensor.neighbourSensor.get(i);
-      		System.out.print(neighbor.typeOfSensor+" ");
-      		if(neighbor.getState()==false) {	
-      		//System.out.print(neighbor.typeOfSensor+" ");
-      		queue.add(neighbor); 
-      		}
-      		}
-      		//the state of the currentsensor is changed so it cannot be added to the queue again. 
-      		currentSensor.setState(true);
-
-  		System.out.println(" ");
-      	
-  		//takes the first sensor in the queue and checks if it is the fs sensor. 
-  		//Otherwise it calls the BC method again with the first sensor in the queue. 
-  		while(queue.size() !=0) {
-  		s=queue.poll();
-  		//System.out.print(s.typeOfSensor+" ");
-  		if(s.typeOfSensor.equals(fs.typeOfSensor)) {
-      			System.out.println("Reached FS");
-      			System.out.print("fire started at: ");
-      			System.out.println(firestart.typeOfSensor);
-      	  		return;
-  		}  		
-  		if(s.getState()==false) {
-  		BC(s,fs, firestart);
-  		}
-  		}
-      }
-    
     public int getPositionX(){
         return x;
     }
@@ -98,49 +43,39 @@ public class Sensor {
         y=YN;
     }
     
-    public void setState(boolean state){
+    public void setActive(boolean state){
         active=state;
     }
     public boolean getState(){
         return active;
     }
-    public void setRatio(int newRatio){
-        ratio= newRatio;
+    public void setRatio(int newRad){
+        radious= newRad;
     }
     public int getRatio(){
-        return ratio;
+        return radious;
     }
-    
-      public String getTypeOfSensor(){
-        return typeOfSensor;
-    }
-      public void setForwardMsg(boolean msg){
-          forwardMsg=msg;
-      }
-      public boolean getForwardMsg(){
-          return forwardMsg;
-      }
-      public void setDetrectFire(boolean fire){
-          detrectFire=fire;
-      }
-      public boolean getDetectFire(){
-          return detrectFire;
-      }
-     
-  
-  
-  
     
     public void setNeighbourSeonsor(ArrayList<Sensor> newNeighbours){
         neighbourSensor=new ArrayList(newNeighbours);
     }
     
-    public ArrayList<Sensor> getNeighbourSeonsor(){
-        return neighbourSensor;
-    }
     public int getNeighborNumber(){
         return neighbourSensor.size();
     }
+    
+    
+    //////////////////////////////
+   /* SHORTEST PATH CODE BLOCK */
+  /////////////////////////////
+    
+    public void printNeighbors(){
+        for(Sensor s : neighbourSensor){
+            System.out.println(s.typeOfSensor);
+        }
+    }
+    
+    
     
     public double distanceBetweenSensors(Sensor otherSensor){
         
@@ -155,23 +90,39 @@ public class Sensor {
         
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);
+        System.out.println("d1=("+ d1X + ","+ d1Y + " and d2=(" + d2X + "," + d2Y + ")");
         System.out.println("Distance is :" + df.format(distance));
         
         return distance;
     }
     
+    public void printPathToFS(){
+        System.out.println("The shorted path for " + this.typeOfSensor + " is ");
+        ShortestPathList.printSP();
+    }
+    
+    public void findSP(Sensor target, ShortestPathList spl){
+        System.out.println("Calculating shortest path for " + this.typeOfSensor);
+        
+        shortestPath(target, this.neighborDistance, spl);
+    }
+    
     //Routing - SP
-    public void shortestPath(Sensor target, ArrayList<Double> neighborDistanceMatrix){
+    public void shortestPath(Sensor target, ArrayList<Double> neighborDistanceMatrix, ShortestPathList spl){
+        
+        this.setActive(true);
+        System.out.println(this.typeOfSensor + " just became "+ this.getState());
+        
+        //System.out.println("Shortest path ...");
         
         
-        
-        System.out.println("Shortest path ...");
         
         double maxDist = 0;
         
         int rep = 0;
         int index = 0;
         
+        //Check for the disctacnes between the neighbors
         for(double d : neighborDistanceMatrix){
             if(d > maxDist){
                 maxDist = d;
@@ -182,6 +133,7 @@ public class Sensor {
             
         }
         
+        //Get the index of FireStation
         int j = 0;
         if(neighbourSensor.contains(target)){
             for(Sensor s : neighbourSensor){
@@ -192,8 +144,8 @@ public class Sensor {
             }
         }
         
-        System.out.println(this.typeOfSensor);
-        System.out.println(index);
+        System.out.println("Current: " + this.typeOfSensor);
+        System.out.println("Next position: " +index);
         
         String case1 = neighbourSensor.get(index).typeOfSensor;
         String case2 = target.typeOfSensor;
@@ -201,11 +153,15 @@ public class Sensor {
         System.out.println("Next is: " + case1);
         
         
-        
+        spl.s_list.add(neighbourSensor.get(index));
         //neighborDistanceMatrix.remove(index);
         if(!case1.equals(case2)){
-            neighbourSensor.get(index).shortestPath(target, neighbourSensor.get(index).neighborDistance);
+            
+            neighbourSensor.get(index).shortestPath(target, neighbourSensor.get(index).neighborDistance, spl);
         }
+        
+            
+        
         
 
         
