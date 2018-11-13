@@ -25,7 +25,7 @@ public class Sensor {
     int delay=5;
     boolean forwardMsg;
     boolean detectFire;
-    static LinkedList<Sensor> queue = new LinkedList<Sensor>(); 
+
     public Sensor(int xP,int YP,String tS, int ratioN){
         x= xP;
         y=YP;
@@ -176,7 +176,7 @@ public class Sensor {
     }
     //used to broadcast the message of fire and storing the sensor where the fire is detected. 
   //and then the broadcast method is called. 
-  public static void BCM(Sensor currentSensor, Sensor fs) {
+/*  public static void BCM(Sensor currentSensor, Sensor fs) {
   	Sensor fireStart = currentSensor;
   	BC(currentSensor, fs ,fireStart);    	
   }
@@ -217,7 +217,7 @@ public class Sensor {
   		}
   		}
       }
-
+*/
       public void randomFail(ArrayList<Sensor> arraySensors,int howMany){
         Random random= new Random();
         for(int i=0;i<howMany;i++){

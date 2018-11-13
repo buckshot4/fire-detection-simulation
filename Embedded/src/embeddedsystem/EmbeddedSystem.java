@@ -50,14 +50,14 @@ public class EmbeddedSystem {
             JLabel minutes= new JLabel();
       JLabel milli= new JLabel();
         timer=new MYTimer(emb,minutes,seconds,milli);
-        emb.canvas.fillSensorList();
+        
         emb.canvas.drawSensor();
      
         emb.window.setSize(1000,900);
         emb.window.setTitle("Embedded");
          emb.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
          emb.window.setContentPane( emb.canvas.view);
-       // window.pack();
+      
          emb.window.setLocationByPlatform(true);
          emb.window.setVisible(true);
       
@@ -79,18 +79,22 @@ public class EmbeddedSystem {
          emb.window.getContentPane().add(minutes);
           emb.window.getContentPane().add(milli);
          
+          //Clock timer
          minutes.setBounds(900,40,200,30);
          seconds.setBounds(920,40,200,30);
           milli.setBounds(940, 40, 200, 30);
          timer.startTimer();
-   
-   
-         ShortestPathList spl= new ShortestPathList();
+         
+      
+        
+        System.out.print("SIZE"+sensorList.size());
+           ShortestPathList spl= new ShortestPathList();
         spl.findNeighbors(sensorList);
-        initDistances(sensorList);
+        
+  
+        /*  initDistances(sensorList);
         printAllDistances(sensorList);
-        Sensor s= sensorList.get(0);
-        Sensor s2= sensorList.get(48);
+       
         ArrayList<Sensor> l= new ArrayList();
         s.findSP(s2,spl);
          s.printPathToFS();
@@ -99,15 +103,15 @@ public class EmbeddedSystem {
       emb.canvas.drawLine(s,l);
        }
        //emb.canvas.drawLine(l.get(0), l.get(1));
-      
+      */
          
         
         
-       //  emb.fireSpread(emb.canvas);
+         emb.fireSpread(emb.canvas);
         
     }
       public void update(long dT){
-        // convert milliseconds into other forms
+
         
         
         timer.getMinutesLabel().setText(String.valueOf((dT / (1000*60)) % 60)+"  :");
@@ -120,7 +124,13 @@ public class EmbeddedSystem {
             TimerTask task = new TimerTask() {
         @Override
         public void run() {
+            Sensor s= sensorList.get(sensorList.size()-1);
+            Sensor fs= sensorList.get(48);
            canvas.setFire();
+           
+          if (canvas.distanceFireSensor(s)){
+                canvas.BC(s, fs, s);
+           }
         
            
         }
