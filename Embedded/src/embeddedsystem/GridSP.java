@@ -5,6 +5,7 @@
  */
 package embeddedsystem;
 
+import static embeddedsystem.MyCanvas.sensorList;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -59,7 +60,7 @@ public class GridSP {
         Sensor s3 = new Sensor(20, 10, "s3",22);
         Sensor fs = new Sensor(40, 10, "fs",22);
        
-        /*
+      
         //Neighbors Definition
         Sensor[] s0N = new Sensor[] {s1, s3};
         Sensor[] s1N = new Sensor[] {s0, s2,s3};
@@ -71,12 +72,13 @@ public class GridSP {
         s2.neighbourSensor.addAll(Arrays.asList(s2N));
         s3.neighbourSensor.addAll(Arrays.asList(s3N));
         fs.neighbourSensor.addAll(Arrays.asList(fsN));
-*/
+
         
         //Distance between sensors - Neighborhood
-        ArrayList<Sensor> sensorList = new ArrayList();
+       /* ArrayList<Sensor> sensorList = new ArrayList();
         sensorList.addAll(Arrays.asList(s0, s1, s2, s3, fs));
-        
+        */
+                
         ShortestPathList spl = new ShortestPathList();
         spl.findNeighbors(sensorList);
         //Automatically init the distances between all sensors for a given Sensor List
@@ -90,6 +92,8 @@ public class GridSP {
         
         //ShortestPathList.printSP();
     }
+    
+    
     
     
     

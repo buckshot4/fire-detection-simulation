@@ -41,7 +41,7 @@ public class ShortestPathList {
                     
                     if(distance < s.radious){
                         
-                        System.out.println(s.typeOfSensor + " and " + otherSensor.typeOfSensor + " are neighbors");
+                        //System.out.println(s.typeOfSensor + " and " + otherSensor.typeOfSensor + " are neighbors");
                         s.neighbourSensor.add(otherSensor);
                     }
                     
@@ -49,11 +49,11 @@ public class ShortestPathList {
                 }
             }
             
-            System.out.print("{");
+           // System.out.print("{");
             for(Sensor sensor : s.neighbourSensor){
-                System.out.print(sensor.typeOfSensor + " ");
+               // System.out.print(sensor.typeOfSensor + " ");
             }
-            System.out.println("}");
+           // System.out.println("}");
          
         }
         

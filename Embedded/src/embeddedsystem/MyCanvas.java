@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package embeddedsystem;
+import static embeddedsystem.ShortestPathList.s_list;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.awt.event.*;
@@ -19,12 +20,15 @@ import javax.swing.*;
 public class MyCanvas {
     JLabel view;
     BufferedImage surface;
-    private  ArrayList<Sensor> sensorList;
+    static  ArrayList<Sensor> sensorList =new ArrayList();
     private Fire fire;
     public MyCanvas(){
         
+        
+        
+        
        
-         sensorList = new ArrayList();
+       
             fire= new Fire(50,50,20);
         surface = new BufferedImage(700,600,BufferedImage.TYPE_INT_RGB);
         
@@ -32,9 +36,8 @@ public class MyCanvas {
         Graphics g = surface.getGraphics();
        g.setColor(Color.GREEN);
         g.fillRect(0,0,700,600);
-        
-   
-        
+       
+       
         g.dispose();
     }
      public void addNewElement(int numberClusters) {
@@ -44,9 +47,9 @@ public class MyCanvas {
         g.dispose();
         view.repaint();
     }
-     public ArrayList<Sensor> getSensorList(){
+ /*    public ArrayList<Sensor> getSensorList(){
          return sensorList;
-     }
+     }*/
      public void changeElement(){
            Graphics g = surface.getGraphics();
             Sensor s=sensorList.get(7);
@@ -110,10 +113,14 @@ public class MyCanvas {
            
         
      }
-     public void drawLine(Sensor s1,Sensor s2){
+     public void drawLine(Sensor s,ArrayList<Sensor> l){
+         
          Graphics g = surface.getGraphics();
           g.setColor(Color.BLUE);
-           g.drawLine(s1.x, s1.y, s2.x, s2.y);
+          g.drawLine(s.x,s.y,l.get(0).getPositionX(),l.get(0).getPositionY());
+          for(int i=0;i<l.size()-1;i++){
+           g.drawLine(l.get(i).getPositionX(), l.get(i).getPositionY(), l.get(i+1).getPositionX(), l.get(i+1).getPositionY());
+          }
         g.dispose();
         view.repaint();
      }
@@ -137,7 +144,7 @@ public class MyCanvas {
      
      public void fillSensorList(){
          //(sensorlist, amountof sensors, width, height, radius)
-         Embedded.createSensorGrid(sensorList,50,400,400,250);
+         Embedded.createSensorGrid(sensorList,50,400,400,60);
          //700 and 600 are the current value of the width and height of the forest
  
     }

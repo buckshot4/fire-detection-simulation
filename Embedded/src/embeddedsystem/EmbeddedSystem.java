@@ -5,6 +5,10 @@
  */
 package embeddedsystem;
 
+import static embeddedsystem.GridSP.initDistances;
+import static embeddedsystem.GridSP.printAllDistances;
+import static embeddedsystem.MyCanvas.sensorList;
+import static embeddedsystem.ShortestPathList.s_list;
 import javax.swing.JFrame;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -63,8 +67,8 @@ public class EmbeddedSystem {
             @Override
             public void actionPerformed(ActionEvent e) {
                
-               //  emb.canvas.weatherChange(20);
-                 emb.canvas.setFire();
+                 emb.canvas.weatherChange(20);
+                 //emb.canvas.setFire();
                 
             }
            
@@ -81,8 +85,25 @@ public class EmbeddedSystem {
          timer.startTimer();
    
    
+         ShortestPathList spl= new ShortestPathList();
+        spl.findNeighbors(sensorList);
+        initDistances(sensorList);
+        printAllDistances(sensorList);
+        Sensor s= sensorList.get(0);
+        Sensor s2= sensorList.get(48);
+        ArrayList<Sensor> l= new ArrayList();
+        s.findSP(s2,spl);
+         s.printPathToFS();
+       l=s_list;
+       if(l.size()>1){
+      emb.canvas.drawLine(s,l);
+       }
+       //emb.canvas.drawLine(l.get(0), l.get(1));
+      
          
-         emb.fireSpread(emb.canvas);
+        
+        
+       //  emb.fireSpread(emb.canvas);
         
     }
       public void update(long dT){
@@ -116,10 +137,10 @@ public class EmbeddedSystem {
         @Override
         public void run() {
            
-            Sensor s= canvas.getSensorList().get(5);
-            Sensor s2= canvas.getSensorList().get(9);
+          //  Sensor s= canvas.getSensorList().get(5);
+           // Sensor s2= canvas.getSensorList().get(9);
             //canvas.fireDetection(s);
-            canvas.drawLine(s, s2);
+            //canvas.drawLine(s, s2);
            
         }
     };
