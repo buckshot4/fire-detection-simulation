@@ -79,6 +79,8 @@ public class EmbeddedSystem {
          emb.window.getContentPane().add(minutes);
           emb.window.getContentPane().add(milli);
          
+          //Sensor.randomFail(sensorList, 40);
+          
           //Clock timer
          minutes.setBounds(900,40,200,30);
          seconds.setBounds(920,40,200,30);

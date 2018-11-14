@@ -53,7 +53,7 @@ public class MyCanvas {
      }
      
      public static void BCM(Sensor currentSensor, Sensor fs) {
-   	  if(currentSensor.getState()==false) {
+   	  if(currentSensor.getState()==true) {
    		  	BC(currentSensor, fs ,currentSensor);   
    		  	}  	
  }
@@ -74,7 +74,7 @@ public class MyCanvas {
      		for(int i = 0; i < numOfNeighbors1; ++i){    
      		neighbor = currentSensor.neighbourSensor.get(i);
      		System.out.print(neighbor.typeOfSensor+" ");
-     		if(neighbor.setforwardMsg()==false && neighbor.getState()==false) {	
+     		if(neighbor.setforwardMsg()==false && neighbor.getState()==true) {	
 	        //System.out.print(neighbor.typeOfSensor+" ");
      		queue.add(neighbor); 
      		}
@@ -189,7 +189,7 @@ public class MyCanvas {
                 else{
                     tempSensor = new Sensor(w, h, "s" + Integer.toString(name),radious);
                 }
-                tempSensor.setState(false);
+                tempSensor.setState(true);
                 
                 sensorList.add(tempSensor);
                 name ++;

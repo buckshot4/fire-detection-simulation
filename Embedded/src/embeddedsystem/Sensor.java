@@ -219,11 +219,13 @@ public class Sensor {
       }
 */
       public void randomFail(ArrayList<Sensor> arraySensors,int howMany){
-        Random random= new Random();
-        for(int i=0;i<howMany;i++){
-        int n=random.nextInt(arraySensors.size());
-        arraySensors.get(n).setState(false);
-        }
+          Random random= new Random();
+          for(int i=0;i<howMany;i++){
+          int n=random.nextInt(arraySensors.size()-2);
+          if(n != 49) {
+          arraySensors.get(n).setState(false);
+          }
+          }
     }
     
     public void pingNeigbors(ArrayList<Sensor> origin){
