@@ -52,59 +52,70 @@ public class MyCanvas {
             view.repaint();
      }
      
-      public static void BCM(Sensor currentSensor, Sensor fs) {
-  	Sensor fireStart = currentSensor;
-  	BC(currentSensor, fs ,fireStart);    	
-  }
-   //broadcast firedetection.
-      public static void BC(Sensor currentSensor, Sensor fs, Sensor firestart) {
-      	Sensor neighbor;
-      	Sensor s;
-         Graphics g = surface.getGraphics();
-      
-         Sensor neighbour;
-         g.setColor(Color.red);
-         
-            int numOfNeighbors1 = currentSensor.getNeighborNumber();
-        	System.out.println(" ");
-  		System.out.println(currentSensor.typeOfSensor+" ");     
-      	
-  		//goes through all neighbors and adds them to the queue if their state is not active/false. 
-      		for(int i = 0; i < numOfNeighbors1; ++i){    
-      		neighbor = currentSensor.neighbourSensor.get(i);
-      		System.out.print(neighbor.typeOfSensor+" ");
-      		if(neighbor.getState()==false) {	
-      		//System.out.print(neighbor.typeOfSensor+" ");
-      		queue.add(neighbor); 
-      		}
-      		}
-      		//the state of the currentsensor is changed so it cannot be added to the queue again. 
-      		currentSensor.setState(true);
-                
-                
-                 fillCenteredCircle((Graphics2D) g, currentSensor.x,currentSensor.y, 5);
-   		System.out.println(" ");
-                 g.dispose();
-                    view.repaint();
-  		//takes the first sensor in the queue and checks if it is the fs sensor. 
-  		//Otherwise it calls the BC method again with the first sensor in the queue. 
-  		while(queue.size() !=0) {
-  		s=queue.poll();
-  		//System.out.print(s.typeOfSensor+" ");
-  		if(s.typeOfSensor.equals(fs.typeOfSensor)) {
-                     fillCenteredCircle((Graphics2D) g, s.x,s.y, 7);
-      			System.out.println("Reached FS");
-      			System.out.print("fire started at: ");
-      			System.out.println(firestart.typeOfSensor);
-      	  		return;
-  		}  		
-  		if(s.getState()==false) {
-                    
-  		BC(s,fs, firestart);
-  		
-                }
-  		}
-      }
+     public static void BCM(Sensor currentSensor, Sensor fs) {
+   	  if(currentSensor.getState()==false) {
+   		  	BC(currentSensor, fs ,currentSensor);   
+   		  	}  	
+ }
+     
+  //broadcast firedetection.
+     public static void BC(Sensor currentSensor, Sensor fs, Sensor firestart) {
+     	Sensor neighbor;
+     	Sensor s;
+        Graphics g = surface.getGraphics();
+     
+        g.setColor(Color.red);
+        
+           int numOfNeighbors1 = currentSensor.getNeighborNumber();
+       	System.out.println(" ");
+ 		System.out.println(currentSensor.typeOfSensor+" ");     
+     	
+ 		//goes through all neighbors and adds them to the queue if their state is not active/false. 
+     		for(int i = 0; i < numOfNeighbors1; ++i){    
+     		neighbor = currentSensor.neighbourSensor.get(i);
+     		System.out.print(neighbor.typeOfSensor+" ");
+     		if(neighbor.setforwardMsg()==false && neighbor.getState()==false) {	
+	        //System.out.print(neighbor.typeOfSensor+" ");
+     		queue.add(neighbor); 
+     		}
+     		}
+     		//the state of the currentsensor is changed so it cannot be added to the queue again. 
+     		currentSensor.setforwardMsg(true);
+               
+     		try {
+     			
+   			//sleep 1 seconds
+   			Thread.sleep(500);
+   			
+   		} catch (InterruptedException e) {
+   			e.printStackTrace();
+   		}
+     		
+               
+                fillCenteredCircle((Graphics2D) g, currentSensor.x,currentSensor.y, 5);
+  		System.out.println(" ");
+                g.dispose();
+                   view.repaint();
+ 		//takes the first sensor in the queue and checks if it is the fs sensor. 
+ 		//Otherwise it calls the BC method again with the first sensor in the queue. 
+ 		while(queue.size() !=0) {
+ 		s=queue.poll();
+ 		//System.out.print(s.typeOfSensor+" ");
+ 		if(s.typeOfSensor.equals(fs.typeOfSensor)) {
+                    fillCenteredCircle((Graphics2D) g, s.x,s.y, 7);
+     			System.out.println("Reached FS");
+     			System.out.print("fire started at: ");
+     			System.out.println(firestart.typeOfSensor);
+     	  		//return;
+ 		}  		
+ 		if(s.setforwardMsg()==false) {
+                   
+ 		BC(s,fs, firestart);
+ 		
+               }
+ 		}
+     }
+     
     /* public void test(ArrayList<Sensor> n) throws InterruptedException{
           Graphics g = surface.getGraphics();
       

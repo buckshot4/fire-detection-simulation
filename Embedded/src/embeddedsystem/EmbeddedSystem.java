@@ -129,10 +129,8 @@ public class EmbeddedSystem {
            canvas.setFire();
            
           if (canvas.distanceFireSensor(s)){
-                canvas.BC(s, fs, s);
+                canvas.BCM(s, fs);
            }
-        
-           
         }
     };
               
