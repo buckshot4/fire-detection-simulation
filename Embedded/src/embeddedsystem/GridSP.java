@@ -51,7 +51,7 @@ public class GridSP {
         
     }
     
-    public static void main(String[] args){
+/*    public static void main(String[] args){
         //Sensors Definition
         //Sensor s0 = new Sensor(10, 20, "s0",22);
         //Sensor s1 = new Sensor(20, 30, "s1",22);
@@ -71,7 +71,7 @@ public class GridSP {
         s2.neighbourSensor.addAll(Arrays.asList(s2N));
         s3.neighbourSensor.addAll(Arrays.asList(s3N));
         fs.neighbourSensor.addAll(Arrays.asList(fsN));
-*/
+
         
         //Distance between sensors - Neighborhood
         ArrayList<Sensor> sensorList = new ArrayList();
@@ -134,7 +134,7 @@ public class GridSP {
         //ss.sp_list = ShortestPathList.s_list;
         //ss.printPathToFS();
         
-        /*
+        
         s0.findSP(fs,spl);
         s0.sp_list = ShortestPathList.s_list;
         s0.printPathToFS();
@@ -142,11 +142,11 @@ public class GridSP {
         System.out.println();
         s1.findSP(fs,spl);
         s1.printPathToFS();
-        */
+       
         
         //ShortestPathList.printSP();
     }
-    
+    */
     public static void hopsCalculation(Sensor s){
         ArrayList<Sensor> neighbors = new ArrayList<>();
         neighbors = s.neighbourSensor;

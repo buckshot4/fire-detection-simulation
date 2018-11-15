@@ -76,13 +76,13 @@ public class MyCanvas {
      		for(int i = 0; i < numOfNeighbors1; ++i){    
      		neighbor = currentSensor.neighbourSensor.get(i);
      		System.out.print(neighbor.typeOfSensor+" ");
-     		if(neighbor.setforwardMsg()==false && neighbor.getState()==true) {	
+     		if(neighbor.getForwardMsg()==false && neighbor.getState()==true) {	
 	        //System.out.print(neighbor.typeOfSensor+" ");
      		queue.add(neighbor); 
      		}
      		}
      		//the state of the currentsensor is changed so it cannot be added to the queue again. 
-     		currentSensor.setforwardMsg(true);
+     		currentSensor.setForwardMsg(true);
                
      		try {
      			
@@ -110,7 +110,7 @@ public class MyCanvas {
      			System.out.println(firestart.typeOfSensor);
      	  		//return;
  		}  		
- 		if(s.setforwardMsg()==false) {
+ 		if(s.getForwardMsg()==false) {
                   
  		BC(s,fs, firestart);
  		

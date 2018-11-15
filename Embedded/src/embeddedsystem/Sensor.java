@@ -82,6 +82,13 @@ public class Sensor {
         return typeOfSensor;
     }
     
+    public boolean getForwardMsg(){
+        return forwardMsg;
+    }
+    public void setForwardMsg(boolean newMsg){
+        forwardMsg=newMsg;
+    }
+    
     //////////////////////////////
    /* SHORTEST PATH CODE BLOCK */
   /////////////////////////////
@@ -240,7 +247,7 @@ public class Sensor {
   		}
       }
 
-      public void randomFail(ArrayList<Sensor> arraySensors,int howMany){
+      public static void randomFail(ArrayList<Sensor> arraySensors,int howMany){//fireStation no
         Random random= new Random();
         for(int i=0;i<howMany;i++){
         int n=random.nextInt(arraySensors.size());

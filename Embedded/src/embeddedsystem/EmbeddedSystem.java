@@ -5,7 +5,9 @@
  */
 package embeddedsystem;
 
+import static embeddedsystem.GridSP.hopsCalculation;
 import static embeddedsystem.GridSP.initDistances;
+import static embeddedsystem.GridSP.newSP;
 import static embeddedsystem.GridSP.printAllDistances;
 import static embeddedsystem.MyCanvas.sensorList;
 import static embeddedsystem.ShortestPathList.s_list;
@@ -33,9 +35,9 @@ public class EmbeddedSystem {
 
  private static MYTimer timer;
  
- private MyCanvas canvas;
+ private static MyCanvas canvas;
  private JFrame window;
-    
+
  
  public EmbeddedSystem(){
        canvas = new MyCanvas();
@@ -48,7 +50,9 @@ public class EmbeddedSystem {
         EmbeddedSystem emb=new EmbeddedSystem();
            JLabel seconds= new JLabel();
             JLabel minutes= new JLabel();
+            
       JLabel milli= new JLabel();
+      
         timer=new MYTimer(emb,minutes,seconds,milli);
         
         emb.canvas.drawSensor();
@@ -79,7 +83,7 @@ public class EmbeddedSystem {
          emb.window.getContentPane().add(minutes);
           emb.window.getContentPane().add(milli);
          
-         // Sensor.randomFail(sensorList, 40);
+       
           
           //Clock timer
          minutes.setBounds(900,40,200,30);
@@ -87,17 +91,31 @@ public class EmbeddedSystem {
           milli.setBounds(940, 40, 200, 30);
          timer.startTimer();
          
+      ShortestPathList spl= new ShortestPathList();
       
+           Sensor.randomFail(sensorList, 10);
+         spl.findNeighbors(sensorList);
+         for(Sensor s: sensorList){
+             if(s.getTypeOfSensor().equals("fs")){
+                 s.hops=0;
+                 
+             }
+         }
+          for(int i = 0; i < 99 ; i++){
+            for(Sensor s : sensorList){
+                hopsCalculation(s);
+            }
+        }
         
-       
   
         
        //emb.canvas.drawLine(l.get(0), l.get(1));
       
+       fireSpreadRouting(canvas,spl);
          
         
         
-        emb.fireSpread(emb.canvas);
+      //  emb.fireSpread(emb.canvas);
         
     }
       public void update(long dT){
@@ -108,6 +126,43 @@ public class EmbeddedSystem {
         timer.getsecondLabel().setText(String.valueOf((dT / 1000) % 60 ) + " : ");
         timer.getMilliseconds().setText(String.valueOf((dT)%1000));
     }
+      
+      
+      
+      
+      
+      
+      
+        
+               
+     public static void fireSpreadRouting(MyCanvas canvas,ShortestPathList spl){
+        Timer t= new Timer();
+            TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            boolean message=true;
+            if(message){
+          Sensor s=null; //sensorList.get(sensorList.size()-1);
+           
+           canvas.setFire();
+           
+           s=canvas.distanceFireSensor();
+          if ((s!=null)){
+              newSP(s, spl);
+              ShortestPathList.printSP();
+              
+              canvas.drawLine(s, spl.s_list);
+              message=false;
+           }
+        }}
+    };
+              
+       t.schedule(task, 2000,900);
+        
+    }
+      
+    
+             
           
      public void fireSpread(MyCanvas canvas){
         Timer t= new Timer();
