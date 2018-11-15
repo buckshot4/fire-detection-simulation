@@ -9,6 +9,7 @@ import static embeddedsystem.ShortestPathList.s_list;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.awt.event.*;
+import static java.lang.Thread.sleep;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -29,8 +30,9 @@ public class MyCanvas {
         static LinkedList<Sensor> queue = new LinkedList<Sensor>(); 
     public MyCanvas(){
         
+        Random r= new Random();
         
-        fire= new Fire(650,550,20);
+        fire= new Fire(r.nextInt(700),r.nextInt(600),20);
         surface = new BufferedImage(700,600,BufferedImage.TYPE_INT_RGB);
         
         view = new JLabel(new ImageIcon(surface));
@@ -52,14 +54,14 @@ public class MyCanvas {
             view.repaint();
      }
      
-     public static void BCM(Sensor currentSensor, Sensor fs) {
+     public static void BCM(Sensor currentSensor, Sensor fs) throws InterruptedException {
    	  if(currentSensor.getState()==true) {
    		  	BC(currentSensor, fs ,currentSensor);   
    		  	}  	
  }
      
   //broadcast firedetection.
-     public static void BC(Sensor currentSensor, Sensor fs, Sensor firestart) {
+     public static void BC(Sensor currentSensor, Sensor fs, Sensor firestart) throws InterruptedException {
      	Sensor neighbor;
      	Sensor s;
         Graphics g = surface.getGraphics();
@@ -85,7 +87,7 @@ public class MyCanvas {
      		try {
      			
    			//sleep 1 seconds
-   			Thread.sleep(500);
+   			Thread.sleep(200);
    			
    		} catch (InterruptedException e) {
    			e.printStackTrace();
@@ -109,7 +111,7 @@ public class MyCanvas {
      	  		//return;
  		}  		
  		if(s.setforwardMsg()==false) {
-                   
+                  
  		BC(s,fs, firestart);
  		
                }
@@ -264,7 +266,38 @@ public class MyCanvas {
          g.drawOval(x,y,r,r);
     }
      
-       public boolean distanceFireSensor(Sensor otherSensor){
+     public Sensor distanceFireSensor(){
+        Sensor s=null;
+        double d1X = fire.getPositionX();
+        double d1Y = fire.getPositonY();
+        Sensor otherSensor;
+        for(int i=0;i<sensorList.size();i++){
+          otherSensor=sensorList.get(i);
+        double d2X = otherSensor.x;
+        double d2Y = otherSensor.y;
+        int fireRange=fire.getRange();
+       int fireDetected=(int)((fireRange/2)+(otherSensor.radious/2));
+       
+        
+        double distance = Math.sqrt(Math.pow(d1X-d2X,2) + Math.pow(d1Y-d2Y,2));
+          System.out.println("DistanceF:"+ fire.getRange()/2);
+              System.out.println("DistanceS:"+ otherSensor.radious/2);
+        System.out.println("Distance:"+distance+"  FireD:"+fireDetected);
+        
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
+       // System.out.println("d1=("+ d1X + ","+ d1Y + " and d2=(" + d2X + "," + d2Y + ")");
+        //System.out.println("Distance is :" + df.format(distance));
+        if(fireDetected>(distance+10)){
+            s=otherSensor;
+        }
+        }
+        return s;
+        
+   
+        
+    }
+       public boolean distanceFireSensor1(Sensor otherSensor){
         boolean b;
         double d1X = fire.getPositionX();
         double d1Y = fire.getPositonY();
@@ -293,7 +326,7 @@ public class MyCanvas {
       
      public void setFire(){
           Graphics g = surface.getGraphics();
-         Color c=new Color(1f,0f,0f,.1f );
+         Color c=new Color(1f,0f,0f,.4f );
          g.setColor(c);
          fillCenteredCircle((Graphics2D) g,fire.getPositionX(),fire.getPositonY(),fire.getRange());
          fire.setRange((fire.getRange()+20));

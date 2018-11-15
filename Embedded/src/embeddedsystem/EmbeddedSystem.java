@@ -79,7 +79,7 @@ public class EmbeddedSystem {
          emb.window.getContentPane().add(minutes);
           emb.window.getContentPane().add(milli);
          
-          //Sensor.randomFail(sensorList, 40);
+         // Sensor.randomFail(sensorList, 40);
           
           //Clock timer
          minutes.setBounds(900,40,200,30);
@@ -89,27 +89,15 @@ public class EmbeddedSystem {
          
       
         
-        System.out.print("SIZE"+sensorList.size());
-           ShortestPathList spl= new ShortestPathList();
-        spl.findNeighbors(sensorList);
-        
-  
-        /*  initDistances(sensorList);
-        printAllDistances(sensorList);
        
-        ArrayList<Sensor> l= new ArrayList();
-        s.findSP(s2,spl);
-         s.printPathToFS();
-       l=s_list;
-       if(l.size()>1){
-      emb.canvas.drawLine(s,l);
-       }
+  
+        
        //emb.canvas.drawLine(l.get(0), l.get(1));
-      */
+      
          
         
         
-         emb.fireSpread(emb.canvas);
+        emb.fireSpread(emb.canvas);
         
     }
       public void update(long dT){
@@ -121,19 +109,42 @@ public class EmbeddedSystem {
         timer.getMilliseconds().setText(String.valueOf((dT)%1000));
     }
           
-    public void fireSpread(MyCanvas canvas){
+     public void fireSpread(MyCanvas canvas){
         Timer t= new Timer();
             TimerTask task = new TimerTask() {
         @Override
         public void run() {
-            Sensor s= sensorList.get(sensorList.size()-1);
+            boolean message=true;
+            if(message){
+          Sensor s=null; //sensorList.get(sensorList.size()-1);
             Sensor fs= sensorList.get(48);
            canvas.setFire();
            
-          if (canvas.distanceFireSensor(s)){
-                canvas.BCM(s, fs);
+           s=canvas.distanceFireSensor();
+          if ((s!=null)){
+              try {
+                        System.out.print("SIZE"+sensorList.size());
+                  ShortestPathList spl= new ShortestPathList();
+                  spl.findNeighbors(sensorList);
+                  
+                  initDistances(sensorList);
+                  printAllDistances(sensorList);
+                  
+                  //ArrayList<Sensor> l= new ArrayList();
+                 // s.findSP(fs,spl);
+                 // s.printPathToFS();
+                  /*     l=s_list;
+                  if(l.size()>1){
+                  canvas.drawLine(s,l);
+                  }
+                  */
+                  message=false;
+                  canvas.BCM(s, fs);
+              } catch (InterruptedException ex) {
+                  Logger.getLogger(EmbeddedSystem.class.getName()).log(Level.SEVERE, null, ex);
+              }
            }
-        }
+        }}
     };
               
        t.schedule(task, 2000,900);

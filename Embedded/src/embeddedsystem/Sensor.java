@@ -218,7 +218,7 @@ public class Sensor {
   		}
       }
 */
-      public void randomFail(ArrayList<Sensor> arraySensors,int howMany){
+      public static void randomFail(ArrayList<Sensor> arraySensors,int howMany){
           Random random= new Random();
           for(int i=0;i<howMany;i++){
           int n=random.nextInt(arraySensors.size()-2);

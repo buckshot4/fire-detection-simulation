@@ -39,7 +39,7 @@ public class ShortestPathList {
                 if(!s.typeOfSensor.equals(otherSensor.typeOfSensor)){
                     distance = Math.sqrt(Math.pow(d1X-d2X,2) + Math.pow(d1Y-d2Y,2));
                     
-                    if(distance < s.radious){
+                    if(distance < s.radious/2){
                         
                         //System.out.println(s.typeOfSensor + " and " + otherSensor.typeOfSensor + " are neighbors");
                         s.neighbourSensor.add(otherSensor);
