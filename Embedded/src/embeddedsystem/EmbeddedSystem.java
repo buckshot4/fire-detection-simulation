@@ -93,7 +93,7 @@ public class EmbeddedSystem {
          
       ShortestPathList spl= new ShortestPathList();
       
-           MyCanvas.randomFail( 10);//show failing sensor
+           //MyCanvas.randomFail( 10);//show failing sensor
          spl.findNeighbors(sensorList);
          for(Sensor s: sensorList){
              if(s.getTypeOfSensor().equals("fs")){
@@ -107,7 +107,7 @@ public class EmbeddedSystem {
             }
         }
         
-            canvas.changeElement();
+            
       
       
        
@@ -115,7 +115,7 @@ public class EmbeddedSystem {
          
         
         
-      //emb.fireSpread(emb.canvas);
+     // emb.fireSpread(emb.canvas);
         
     }
       public void update(long dT){

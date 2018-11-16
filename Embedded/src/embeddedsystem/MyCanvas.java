@@ -130,7 +130,7 @@ public class MyCanvas {
         
         for(int w = step; w < width; w = w + step){
             for(int h = step; h < height; h = h +step){
-                if((w == width/2) && (h == height / 2) ){
+                if((w == width-step) && (h == height-step) ){
                     tempSensor = new Sensor(w+100, h+100, "fs",radious);
                     
                 }
@@ -260,11 +260,11 @@ public class MyCanvas {
                 s=sensorList.get(i);
                 if(s.getTypeOfSensor().equalsIgnoreCase("fs")){
                      g.setColor(Color.BLUE);
-               drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
-                  s=sensorList.get(i);
-                 s.setRatio(s.radious-2);
-                  drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
-                g.setColor(Color.BLACK);
+                    drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
+                     s=sensorList.get(i);
+                    s.setRatio(s.radious-2);
+                    drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
+                  
                 fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
                 }else{
                 g.setColor(Color.BLACK);
