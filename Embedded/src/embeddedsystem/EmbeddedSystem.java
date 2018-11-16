@@ -55,12 +55,12 @@ public class EmbeddedSystem {
       
         timer=new MYTimer(emb,minutes,seconds,milli);
         
-        emb.canvas.drawSensor();
+       canvas.drawSensor();
      
-        emb.window.setSize(1000,900);
+        emb.window.setSize(1000,1000);
         emb.window.setTitle("Embedded");
          emb.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         emb.window.setContentPane( emb.canvas.view);
+         emb.window.setContentPane( canvas.view);
       
          emb.window.setLocationByPlatform(true);
          emb.window.setVisible(true);
@@ -71,7 +71,7 @@ public class EmbeddedSystem {
             @Override
             public void actionPerformed(ActionEvent e) {
                
-                 emb.canvas.weatherChange(20);
+                 canvas.weatherChange(13);
                  //emb.canvas.setFire();
                 
             }
@@ -93,7 +93,7 @@ public class EmbeddedSystem {
          
       ShortestPathList spl= new ShortestPathList();
       
-           Sensor.randomFail(sensorList, 10);
+           MyCanvas.randomFail( 10);//show failing sensor
          spl.findNeighbors(sensorList);
          for(Sensor s: sensorList){
              if(s.getTypeOfSensor().equals("fs")){
@@ -107,15 +107,15 @@ public class EmbeddedSystem {
             }
         }
         
-  
-        
-       //emb.canvas.drawLine(l.get(0), l.get(1));
+            canvas.changeElement();
       
+      
+       
        fireSpreadRouting(canvas,spl);
          
         
         
-      //  emb.fireSpread(emb.canvas);
+      //emb.fireSpread(emb.canvas);
         
     }
       public void update(long dT){
@@ -138,23 +138,25 @@ public class EmbeddedSystem {
      public static void fireSpreadRouting(MyCanvas canvas,ShortestPathList spl){
         Timer t= new Timer();
             TimerTask task = new TimerTask() {
+                boolean message=true;
         @Override
         public void run() {
-            boolean message=true;
+            
             if(message){
           Sensor s=null; //sensorList.get(sensorList.size()-1);
            
            canvas.setFire();
            
            s=canvas.distanceFireSensor();
-          if ((s!=null)){
+          if (s!=null){
               newSP(s, spl);
               ShortestPathList.printSP();
-              
-              canvas.drawLine(s, spl.s_list);
+              canvas.drawThickLine(s, s_list);
+             // canvas.drawLine(s, spl.s_list);
               message=false;
            }
-        }}
+        }
+        }
     };
               
        t.schedule(task, 2000,900);
@@ -172,7 +174,7 @@ public class EmbeddedSystem {
             boolean message=true;
             if(message){
           Sensor s=null; //sensorList.get(sensorList.size()-1);
-            Sensor fs= sensorList.get(48);
+            Sensor fs= sensorList.get(49);
            canvas.setFire();
            
            s=canvas.distanceFireSensor();

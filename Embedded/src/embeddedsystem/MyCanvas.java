@@ -33,12 +33,12 @@ public class MyCanvas {
         Random r= new Random();
         
         fire= new Fire(r.nextInt(700),r.nextInt(600),20);
-        surface = new BufferedImage(700,600,BufferedImage.TYPE_INT_RGB);
+        surface = new BufferedImage(800,700,BufferedImage.TYPE_INT_RGB);
         
         view = new JLabel(new ImageIcon(surface));
         Graphics g = surface.getGraphics();
-       g.setColor(Color.GREEN);
-        g.fillRect(0,0,700,600);
+       g.setColor(Color.WHITE);
+        g.fillRect(0,0,800,700);
        sensorList=createSensorList(600,500,110);
        
         g.dispose();
@@ -46,9 +46,9 @@ public class MyCanvas {
 
      public void changeElement(){
            Graphics g = surface.getGraphics();
-            Sensor s=sensorList.get(7);
-            g.setColor(Color.red);
-           fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 5);
+            Sensor s=sensorList.get(49);
+            g.setColor(Color.BLUE);
+           fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 10);
            
             g.dispose();
             view.repaint();
@@ -66,7 +66,7 @@ public class MyCanvas {
      	Sensor s;
         Graphics g = surface.getGraphics();
      
-        g.setColor(Color.red);
+        g.setColor(Color.GREEN);
         
            int numOfNeighbors1 = currentSensor.getNeighborNumber();
        	System.out.println(" ");
@@ -94,7 +94,7 @@ public class MyCanvas {
    		}
      		
                
-                fillCenteredCircle((Graphics2D) g, currentSensor.x,currentSensor.y, 5);
+                fillCenteredCircle((Graphics2D) g, currentSensor.x,currentSensor.y, 9);
   		System.out.println(" ");
                 g.dispose();
                    view.repaint();
@@ -118,61 +118,7 @@ public class MyCanvas {
  		}
      }
      
-    /* public void test(ArrayList<Sensor> n) throws InterruptedException{
-          Graphics g = surface.getGraphics();
-      
-         Sensor neighbour;
-         g.setColor(Color.red);
-         for(int i=0;i<n.size();i++){
-          neighbour=n.get(i);
-          //TimeUnit.SECONDS.sleep(1);
-          if(neighbour.getTypeOfSensor().equalsIgnoreCase("fs")){
-              fillCenteredCircle((Graphics2D) g,neighbour.getPositionX(),neighbour.getPositionY(), 7);
-          }else{
-              if(neighbour.getState()){
-                  
-              }else{
-              neighbour.setState(true);
-              fillCenteredCircle((Graphics2D) g,neighbour.getPositionX(),neighbour.getPositionY(), 5);
-             // TimeUnit.SECONDS.sleep(1);
-              test(neighbour.getNeighbourSeonsor());
-           
-           
-               g.dispose();
-            view.repaint();
-              }
-         }
-         }
-           
-     }
-     public void fireDetection(Sensor s) throws InterruptedException{
-         Graphics g = surface.getGraphics();
-      
-         Sensor neighbour;
-         g.setColor(Color.red);
-         fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 5);
-         
-           for(int i=0;i<s.getNeighborNumber();i++){
-            neighbour=s.getNeighbourSeonsor().get(i);
-            if(neighbour.getTypeOfSensor().equalsIgnoreCase("fs")){
-                fillCenteredCircle((Graphics2D) g,neighbour.getPositionX(),neighbour.getPositionY(), 7);
-            }else{
-                if(neighbour.getState()){
-                    
-                }else{
-                neighbour.setState(true);
-                fillCenteredCircle((Graphics2D) g,neighbour.getPositionX(),neighbour.getPositionY(), 5);
-                g.dispose();
-                view.repaint();
-                 test(neighbour.getNeighbourSeonsor());
-                 } 
-            }
-            
-            }
-           
-        
-     }
-      */
+  
          public static ArrayList<Sensor> createSensorList(int width, int height, int radious){
 
         ArrayList sensorList = new ArrayList<> ();
@@ -185,11 +131,11 @@ public class MyCanvas {
         for(int w = step; w < width; w = w + step){
             for(int h = step; h < height; h = h +step){
                 if((w == width/2) && (h == height / 2) ){
-                    tempSensor = new Sensor(w, h, "fs",radious);
+                    tempSensor = new Sensor(w+100, h+100, "fs",radious);
                     
                 }
                 else{
-                    tempSensor = new Sensor(w, h, "s" + Integer.toString(name),radious);
+                    tempSensor = new Sensor(w+100, h+100, "s" + Integer.toString(name),radious);
                 }
                 tempSensor.setState(true);
                 
@@ -201,10 +147,83 @@ public class MyCanvas {
         
         return sensorList;
     }
+      public void drawThickLine(Sensor s,ArrayList<Sensor> l){
+            Graphics g = surface.getGraphics();
+            int thickness=5;
+          g.setColor(Color.BLUE);
+                int x1=(s.getPositionX());
+                  int x2=  (l.get(0).getPositionX()); 
+                  int y2=(l.get(0).getPositionY());
+                  int y1=(s.getPositionY());
+                int dX = x2 - x1;
+                int dY = y2 - y1;
+             // line length
+                     double lineLength = Math.sqrt(dX * dX + dY * dY);
+
+                     double scale = (double)(thickness) / (2 * lineLength);
+
+             // The x,y increments from an endpoint needed to create a rectangle...
+                     double ddx = -scale * (double)dY;
+                    double ddy = scale * (double)dX;
+                    ddx += (ddx > 0) ? 0.5 : -0.5;
+                    ddy += (ddy > 0) ? 0.5 : -0.5;
+                     int dx = (int)ddx;
+                     int dy = (int)ddy;
+
+                 // Now we can compute the corner points...
+                     int xPoints[] = new int[4];
+                     int yPoints[] = new int[4];
+
+                     xPoints[0] = x1 + dx; yPoints[0] = y1 + dy;
+                     xPoints[1] = x1 - dx; yPoints[1] = y1 - dy;
+                      xPoints[2] = x2 - dx; yPoints[2] = y2 - dy;
+                         xPoints[3] = x2 + dx; yPoints[3] = y2 + dy;
+
+                     g.fillPolygon(xPoints, yPoints, 4);
+                     
+                     for(int i=0;i<l.size()-1;i++){
+                           x1=(l.get(i).getPositionX());
+                           x2=  (l.get(i+1).getPositionX()); 
+                           y2=(l.get(i+1).getPositionY());
+                             y1=(l.get(i).getPositionY());
+                             dX = x2 - x1;
+                            dY = y2 - y1;
+             // line length
+                             lineLength = Math.sqrt(dX * dX + dY * dY);
+
+                             scale = (double)(thickness) / (2 * lineLength);
+
+             // The x,y increments from an endpoint needed to create a rectangle...
+                             ddx = -scale * (double)dY;
+                              ddy = scale * (double)dX;
+                             ddx += (ddx > 0) ? 0.5 : -0.5;
+                             ddy += (ddy > 0) ? 0.5 : -0.5;
+                             dx = (int)ddx;
+                             dy = (int)ddy;
+                         
+                 // Now we can compute the corner points...
+                  
+
+                     xPoints[0] = x1 + dx; yPoints[0] = y1 + dy;
+                     xPoints[1] = x1 - dx; yPoints[1] = y1 - dy;
+                      xPoints[2] = x2 - dx; yPoints[2] = y2 - dy;
+                         xPoints[3] = x2 + dx; yPoints[3] = y2 + dy;
+
+                     g.fillPolygon(xPoints, yPoints, 4);
+                     }
+                     
+                     
+                     
+                         g.dispose();
+        view.repaint();
+          
+      }
     public void drawLine(Sensor s,ArrayList<Sensor> l){
          
          Graphics g = surface.getGraphics();
+       
           g.setColor(Color.BLUE);
+        
           g.drawLine(s.x,s.y,l.get(0).getPositionX(),l.get(0).getPositionY());
           for(int i=0;i<l.size()-1;i++){
            g.drawLine(l.get(i).getPositionX(), l.get(i).getPositionY(), l.get(i+1).getPositionX(), l.get(i+1).getPositionY());
@@ -216,8 +235,8 @@ public class MyCanvas {
      public void weatherChange(int power){
            Graphics g = surface.getGraphics();
          Sensor s;
-      g.setColor(Color.ORANGE);
-        g.fillRect(0,0,800,700);
+      g.setColor(Color.WHITE);
+     g.fillRect(0,0,800,700);
         
          for(int i=0;i<sensorList.size(); i++){
          s=sensorList.get(i);
@@ -242,6 +261,9 @@ public class MyCanvas {
                 if(s.getTypeOfSensor().equalsIgnoreCase("fs")){
                      g.setColor(Color.BLUE);
                drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
+                  s=sensorList.get(i);
+                 s.setRatio(s.radious-2);
+                  drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
                 g.setColor(Color.BLACK);
                 fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
                 }else{
@@ -333,5 +355,19 @@ public class MyCanvas {
             g.dispose();
             view.repaint();
      }
+        public static void randomFail(int howMany){
+          
+            Graphics g = surface.getGraphics();
+             g.setColor(Color.RED);
+        Random random= new Random();
+        for(int i=0;i<howMany;i++){
+        int n=random.nextInt(sensorList.size());
+        if( sensorList.get(n).getTypeOfSensor().equals("fs")){
+            i--;
+        }
+        sensorList.get(n).setState(false);
+        fillCenteredCircle((Graphics2D) g,sensorList.get(n).getPositionX(),sensorList.get(n).getPositionY(),8);
+        }
+    }
  
 }

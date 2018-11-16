@@ -5,6 +5,9 @@
  */
 package embeddedsystem;
 
+import static embeddedsystem.MyCanvas.surface;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -247,13 +250,7 @@ public class Sensor {
   		}
       }
 
-      public static void randomFail(ArrayList<Sensor> arraySensors,int howMany){//fireStation no
-        Random random= new Random();
-        for(int i=0;i<howMany;i++){
-        int n=random.nextInt(arraySensors.size());
-        arraySensors.get(n).setState(false);
-        }
-    }
+   
     
       
     public void pingNeigbors(ArrayList<Sensor> origin){
