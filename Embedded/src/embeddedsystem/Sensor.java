@@ -19,14 +19,15 @@ public class Sensor {
     int x;
     int y;
     String typeOfSensor;
-    int radious;
-    boolean active;
+    int radious;//message radious
+    int detectionR;//detect fire radious
+    boolean active;//works or not
     ArrayList<Sensor> neighbourSensor;
     ArrayList<Double> neighborDistance;
     Double[] nd;
     ShortestPathList spl;
-    int delay=5;
-    boolean forwardMsg;
+    int delay=5;//time delay
+    boolean forwardMsg;//if message arrived
     boolean detectFire;
     static LinkedList<Sensor> queue = new LinkedList<Sensor>();
     ArrayList<Sensor> sp_list;
@@ -46,6 +47,7 @@ public class Sensor {
         forwardMsg = false;
         hops = 99;
         originNeighbor = new ArrayList<>();
+        detectionR=ratioN/2;
         
     } 
     public int getPositionX(){
@@ -60,7 +62,12 @@ public class Sensor {
     public void setPY(int YN){
         y=YN;
     }
-    
+    public void setDetectR(int newDetect){
+        detectionR=newDetect;
+    }
+    public int getDetectR(){
+        return detectionR;
+    }
     public void setState(boolean state){
         active=state;
     }
@@ -208,7 +215,7 @@ public class Sensor {
     }
     //used to broadcast the message of fire and storing the sensor where the fire is detected. 
   //and then the broadcast method is called. 
-  public static void BCM(Sensor currentSensor, Sensor fs) {
+ /* public static void BCM(Sensor currentSensor, Sensor fs) {
   	Sensor fireStart = currentSensor;
   	BC(currentSensor, fs ,fireStart);    	
   }
@@ -249,7 +256,7 @@ public class Sensor {
   		}
   		}
       }
-
+*/
    
     
       

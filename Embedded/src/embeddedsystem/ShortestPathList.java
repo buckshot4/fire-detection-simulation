@@ -31,6 +31,7 @@ public class ShortestPathList {
         
         // find neighbors for each sensor
         for(Sensor s : sensorList){
+          
             d1X = s.x;
             d1Y = s.y;
             for(Sensor otherSensor : sensorList){
@@ -41,7 +42,7 @@ public class ShortestPathList {
                     distance = Math.sqrt(Math.pow(d1X-d2X,2) + Math.pow(d1Y-d2Y,2));
                     
                    // System.out.print("state:  "+ s.getState()+"   ");
-                    if((distance < s.radious/2)&&(otherSensor.getState())){
+                    if(distance < s.radious/2){
                         
                         //System.out.println(s.typeOfSensor + " and " + otherSensor.typeOfSensor + " are neighbors");
                         s.neighbourSensor.add(otherSensor);
@@ -82,8 +83,15 @@ public class ShortestPathList {
         s_list.clear();
     }
 
-    int size() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void checkNeighbors(ArrayList<Sensor> sensorList){
+         for(Sensor s : sensorList){
+             for(int i=0;i<s.neighbourSensor.size();i++){
+                 if(s.neighbourSensor.get(i).getState()==false){
+                     System.out.println("REMOVED");
+                     s.neighbourSensor.remove(i);
+                 }
+             }
+         }
+     
     }
-    
 }
