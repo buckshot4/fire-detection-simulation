@@ -33,8 +33,7 @@ public class Sensor {
     ArrayList<Sensor> sp_list;
     int hops;
     ArrayList<Sensor> originNeighbor;
-       
-       
+     
     public Sensor(int xP,int YP,String tS, int ratioN){
         x= xP;
         y=YP;
@@ -48,6 +47,7 @@ public class Sensor {
         hops = 99;
         originNeighbor = new ArrayList<>();
         detectionR=ratioN/2;
+        active=true;
         
     } 
     public int getPositionX(){

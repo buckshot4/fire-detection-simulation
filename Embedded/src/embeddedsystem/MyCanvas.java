@@ -26,12 +26,14 @@ import javax.swing.*;
  * @author eleonora
  */
 public class MyCanvas {
-   static JLabel view;
-   static BufferedImage surface;
-   static  ArrayList<Sensor> sensorList =new ArrayList();
-   private Fire fire;
-   static LinkedList<Sensor> queue = new LinkedList<Sensor>(); 
-       static ArrayList<Sensor> disconneted;
+    
+    private Graphics g ;
+    static JLabel view;
+    static BufferedImage surface;
+    static  ArrayList<Sensor> sensorList =new ArrayList();
+    private Fire fire;
+    static LinkedList<Sensor> queue = new LinkedList<Sensor>(); 
+    static ArrayList<Sensor> disconneted;
    
     public MyCanvas(){
         disconneted=new ArrayList();
@@ -41,9 +43,11 @@ public class MyCanvas {
         surface = new BufferedImage(800,700,BufferedImage.TYPE_INT_RGB);
         
         view = new JLabel(new ImageIcon(surface));
-        
-        Graphics g = surface.getGraphics();
-       g.setColor(Color.WHITE);
+      
+        Graphics g = surface.createGraphics();
+             
+            
+         g.setColor(Color.WHITE);
         g.fillRect(0,0,800,700);
       
        
@@ -118,7 +122,7 @@ public class MyCanvas {
      			System.out.print("fire started at: ");
      			setJlabel(firestart.typeOfSensor);
                        
-                         checkNet();
+                       
  		}  		
  		if(s.getForwardMsg()==false) {
                   
@@ -143,89 +147,7 @@ public class MyCanvas {
          
      }
      
-   public static void BCM2(Sensor currentSensor, Sensor fs) throws InterruptedException {
-   	
-   		  	BC2(currentSensor, fs ,currentSensor);   
-   		  	
- }
-     
-  //broadcast firedetection.
-     public static void BC2(Sensor currentSensor, Sensor fs, Sensor firestart) throws InterruptedException {
-     	Sensor neighbor;
-     	Sensor s;
-        Graphics g = surface.getGraphics();
-     
-        g.setColor(Color.GREEN);
-        
-                int numOfNeighbors1 = currentSensor.getNeighborNumber();
-               
-                    
-               
-                System.out.println(" ");
- 		System.out.println(currentSensor.typeOfSensor+" ");     
-     	
- 		//goes through all neighbors and adds them to the queue if their state is not active/false. 
-     		for(int i = 0; i < numOfNeighbors1; ++i){    
-     		neighbor = currentSensor.neighbourSensor.get(i);
-     		System.out.print(neighbor.typeOfSensor+" ");
-     		if(neighbor.getForwardMsg()==false && neighbor.getState()==true) {	
-	      
-     		queue.add(neighbor); 
-     		}
-                
-     		}
-     		//the state of the currentsensor is changed so it cannot be added to the queue again. 
-     		currentSensor.setForwardMsg(true);
-               
-     		try {
-     			
-   			//sleep 1 seconds
-   			Thread.sleep(200);
-   			
-   		} catch (InterruptedException e) {
-   			e.printStackTrace();
-   		}
-     		
-               
-                fillCenteredCircle((Graphics2D) g, currentSensor.x,currentSensor.y, 9);
-  		System.out.println(" ");
-                g.dispose();
-                view.repaint();
- 		//takes the first sensor in the queue and checks if it is the fs sensor. 
- 		//Otherwise it calls the BC method again with the first sensor in the queue. 
-                if(queue.size()==0){
-                    
-                    disconneted.add(currentSensor);
-                    System.out.println("disconnettedHERE: "+currentSensor.typeOfSensor);
-                }else{
- 		while(queue.size() !=0) {
- 		s=queue.poll();
-              
- 		//System.out.print(s.typeOfSensor+" ");
- 		if(s.typeOfSensor.equals(fs.typeOfSensor)) {        //got to fs
-                    fillCenteredCircle((Graphics2D) g, s.x,s.y, 7);
-     			System.out.println("Reached FS");
-     			System.out.print("fire started at: ");
-     			setJlabel(firestart.typeOfSensor);
-                       
-                         checkNet();
- 		}	
- 		if(s.getForwardMsg()==false) {
-                  
- 		BC(s,fs, firestart);
- 		
-               }
- 		}
-                if(fs.getForwardMsg()!=true){
-                    System.out.print("DISCONNETTED"+disconneted.size());
-                    checkNet();
-                }else{
-                  System.out.println("FINISHED");
-                }
-                }
-            
-     }
-         public static ArrayList<Sensor> createSensorList(int width, int height, int radious){
+    public static ArrayList<Sensor> createSensorList(int width, int height, int radious){
 
         ArrayList sensorList = new ArrayList<> ();
         Sensor tempSensor = null;
@@ -252,6 +174,40 @@ public class MyCanvas {
         
         
         return sensorList;
+    }
+         
+         public static ArrayList<Sensor> createRandomSensorList(int width, int height, int radious){
+
+        ArrayList<Sensor> sensorRandomList = new ArrayList<> ();
+        Sensor tempSensor = null;
+        
+        //here we select 50 as every 50 meters we put a sensor and plus some random meters
+        int step = 50;
+        int name = 0;
+        int rand = 0;
+        Random r = new Random();
+        
+        for(int w = step; w < width; w = w + step + rand){
+            for(int h = step; h < height; h = h +step + rand){
+                if((w == step) && (h == step) ){
+                    tempSensor = new Sensor(w, h, "fs",radious);
+                }
+                else{
+                    tempSensor = new Sensor(w, h, "s" + Integer.toString(name),radious);
+                    name ++;
+                }
+                //tempSensor.setState(false);
+                rand = r.nextInt(10-0) + 0;
+                
+                sensorRandomList.add(tempSensor);
+                
+            }
+        }
+        
+        
+        
+        
+        return sensorRandomList;
     }
       public void drawThickLine(Sensor s,ArrayList<Sensor> l){
             Graphics g = surface.getGraphics();
@@ -395,43 +351,7 @@ public class MyCanvas {
      }
      
     
-    public static void checkNet() throws InterruptedException{
-     Graphics g = surface.getGraphics();
-     Sensor sensor;
-     Sensor fs= sensorList.get(sensorList.size()-1);
-       for(int i=0;i<sensorList.size()-1;i++){
-           if((sensorList.get(i).getState()==true)&&(sensorList.get(i).getForwardMsg()==false)){
-              // canvas.changeElement(sensorList.get(i));
-               disconneted.add(sensorList.get(i));
-              
-           }else{
-             //  JOptionPane.showMessageDialog(window,
-               // "no disconnetions");
-           }
-           
-       }
-       if(disconneted.size()>0){
-           for(int i=0;i<disconneted.size();i++){
-            // System.out.println("disconneted sensor  NETCHECK: "+s.getTypeOfSensor());
-             g.setColor(Color.ORANGE);
-             fillCenteredCircle((Graphics2D) g, disconneted.get(i).getPositionX(),disconneted.get(i).getPositionY(), 7);
-          
-           //  queue.add( disconneted.get(i));
-             
-               
-           }
-       }
-     /* disconneted.clear();
-       while(queue.size()!=0){
-           sensor=queue.poll();
-           BC2(sensor,fs,sensor);
-       }
-       //System.out.print("disconneted sensors: "+disconneted.size());
-         g.dispose();
-         view.repaint();
-        /*JOptionPane.showMessageDialog(window,
-               "disconneted sensors: "+disconneted.size() );*/
-    }
+
     
      public void drawSensor(){
           Graphics g = surface.getGraphics();

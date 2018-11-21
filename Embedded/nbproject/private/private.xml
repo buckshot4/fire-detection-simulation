@@ -6,6 +6,11 @@
             <file>file:/C:/Users/Superkey/Documents/NetBeansProjects/Embedded/src/embeddedsystem/Sensor.java</file>
             <file>file:/C:/Users/Superkey/Documents/NetBeansProjects/Embedded/src/embeddedsystem/Embedded.java</file>
         </group>
-        <group/>
+        <group>
+            <file>file:/Users/eleonora/Desktop/DTU/Embedded/gitHub/fire-detection-simulation/Embedded/src/embeddedsystem/MyThread.java</file>
+            <file>file:/Users/eleonora/Desktop/DTU/Embedded/gitHub/fire-detection-simulation/Embedded/src/embeddedsystem/CheckSubNetworks.java</file>
+            <file>file:/Users/eleonora/Desktop/DTU/Embedded/gitHub/fire-detection-simulation/Embedded/src/embeddedsystem/EmbeddedSystem.java</file>
+            <file>file:/Users/eleonora/Desktop/DTU/Embedded/gitHub/fire-detection-simulation/Embedded/src/embeddedsystem/subNet.java</file>
+        </group>
     </open-files>
 </project-private>

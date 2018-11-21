@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 /**
  *
@@ -47,33 +48,45 @@ public class EmbeddedSystem implements Runnable {
  private JLabel minutes;
  private JLabel milli;
   static JTextField startSensor ;
+  private    ShortestPathList spl;
  public EmbeddedSystem(){
    seconds= new JLabel();
    minutes= new JLabel();
     milli= new JLabel();
-  startSensor = new JTextField(20);
+  startSensor = new JTextField(5);
  tFire= new Timer();
     timerNET= new Timer();
+    spl  = new ShortestPathList();
  
  }
  
     public static void main(String[] args) {
             
             EmbeddedSystem emb=new EmbeddedSystem();
-            JFrame window= new JFrame();
-           
-            JTextField failSensor = new JTextField(20);
+            JFrame simulation= new JFrame();
+           JFrame window= new JFrame();
+           JPanel panel =new JPanel();
+            JTextField failSensor = new JTextField(5);
            
             MyCanvas canvas = new MyCanvas();
-          sensorList=MyCanvas.createSensorList(600,500,110);
-            ShortestPathList spl= new ShortestPathList();
-     
-             window.setSize(1200,1000);
-             window.setTitle("Embedded");
+            sensorList=MyCanvas.createSensorList(600,500,110);
+       
+             window.setSize(200,400);
+             window.setTitle("Control");
              window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-             window.setContentPane( canvas.view);
-             window.setLocationByPlatform(true);
+              window.setContentPane(panel);
+             //window.setLocationByPlatform(true);
              window.setVisible(true);
+          
+          
+          
+             simulation.setSize(800,700);
+             simulation.setTitle("Embedded");
+             simulation.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+             simulation.setContentPane( canvas.view);
+             simulation.setLocationByPlatform(true);
+             simulation.setVisible(true);
+             
   
          
              
@@ -89,32 +102,45 @@ public class EmbeddedSystem implements Runnable {
             }
            
        });
-       weather.setBounds(900,10,200,30);
+       weather.setBounds(0,0,200,30);
        window.getContentPane().add(weather);
-          canvas.drawSensor();
+       canvas.drawSensor();
         
        
         
-        failSensor.setBounds(800,40,80,30);
+        failSensor.setBounds(0,40,20,30);
         window.getContentPane().add(failSensor);
          JButton failSensorButton = new JButton("fail sensors");
         failSensorButton.addActionListener(new ActionListener(){
           @Override
             public void actionPerformed(ActionEvent e) {
+                
                String failSensorStr = failSensor.getText();
-                //resetAll();
+          
                 MyCanvas.randomFail(Integer.parseInt(failSensorStr));
-                  
-                // spl.checkNeighbors(sensorList);
-              
-             emb.net();
+             
+             
             }
            
        });
   
-        failSensorButton.setBounds(900,40,200,30);
+        failSensorButton.setBounds(0,40,200,30);
         window.getContentPane().add(failSensorButton);
         
+          
+         JButton checkNet = new JButton("checkNet");
+        checkNet.addActionListener(new ActionListener(){
+          @Override
+            public void actionPerformed(ActionEvent e) {
+                CheckSubNetworks.remainedSensors=sensorList;
+               emb.net();
+             
+            }
+           
+       });
+  
+        checkNet.setBounds(0,50,200,30);
+        window.getContentPane().add(checkNet);
         
        JButton setFire = new JButton("Random Fire");
        setFire.addActionListener(new ActionListener(){
@@ -124,9 +150,11 @@ public class EmbeddedSystem implements Runnable {
             }
            
        });
-          startSensor.setBounds(800, 70, 80, 30);
+          startSensor.setBounds(0, 70, 80, 30);
         window.getContentPane().add(startSensor);
-       setFire.setBounds(900,70,200,30);
+        
+        
+       setFire.setBounds(0,70,200,30);
        
        window.getContentPane().add(setFire);
         
@@ -135,25 +163,25 @@ public class EmbeddedSystem implements Runnable {
           @Override
             public void actionPerformed(ActionEvent e) {
              
-                emb.tFire.cancel();
+                 emb.tFire.cancel();
                 emb.timerNET.cancel();
                 sensorList.clear();
                 sensorList=MyCanvas.createSensorList(600,500,110);
                canvas.resetCanvas();
               
-               resetAll();
+               emb.resetAll();
                ShortestPathList.n_list.clear();
                 ShortestPathList.s_list.clear();
                 
                          
-                    spl.findNeighbors(sensorList);
+                    emb.spl.findNeighbors(sensorList);
                   
                     initDistances(sensorList);
-               failSensor.setText("");
+               
                startSensor.setText("");
-                emb.tFire= new Timer();
-             emb.timerNET= new Timer();
-                
+               emb.tFire= new Timer();
+            emb.timerNET= new Timer();
+                failSensor.setText("");
               /* if(disconneted.size()>0){
                for(Sensor s: disconneted){
                    System.out.println("DISC"+s.getTypeOfSensor());
@@ -164,10 +192,57 @@ public class EmbeddedSystem implements Runnable {
            
        });
   
-        restart.setBounds(1000,120,200,30);
-        window.getContentPane().add(restart);
+        restart.setBounds(0,120,200,30);
+        panel.add(restart);
         
         
+     
+         
+         
+        JButton shoethestPath = new JButton("shoethestPath");
+       shoethestPath.addActionListener(new ActionListener(){
+          @Override
+            public void actionPerformed(ActionEvent e) {
+                            
+       for(Sensor s : sensorList){
+            if(s.typeOfSensor.equals("fs")){
+                s.hops = 0;
+                System.out.println(s.typeOfSensor + " is " + s.hops + " away from fs");
+            }
+        }
+        
+        for(int i = 0; i < 99 ; i++){
+            for(Sensor s : sensorList){
+                hopsCalculation(s);
+            }
+        }
+        
+        
+        Sensor s0 = null;
+        for(Sensor s : sensorList){
+            if(s.typeOfSensor.equals("s0")){
+                s0 = s;
+            }
+        }
+                fireSpreadRouting(canvas,emb.spl); 
+            }
+           
+       });
+       shoethestPath.setBounds(1000,150,200,30);
+       window.getContentPane().add(shoethestPath);
+    
+  
+  
+        //end grphics stuff
+                   
+                  emb.spl.findNeighbors(sensorList);    
+      
+                  
+                    initDistances(sensorList);
+     //  fireSpreadRouting(canvas,spl);
+       //emb.fireSpread(canvas);
+        
+   
         
         //timer
         window.getContentPane().add(emb.seconds);
@@ -177,29 +252,11 @@ public class EmbeddedSystem implements Runnable {
        
           
           //Clock timer
-         emb.minutes.setBounds(900,90,200,30);
-         emb.seconds.setBounds(920,90,200,30);
-         emb.milli.setBounds(940, 90, 200, 30);
+         emb.minutes.setBounds(0,300,200,30);
+         emb.seconds.setBounds(20,300,200,30);
+         emb.milli.setBounds(40, 300, 200, 30);
        
          emb.startTimer();
-         
-         
-       
-  
-  
-        //end grphics stuff
-                   
-                    spl.findNeighbors(sensorList);
-                  
-                    initDistances(sensorList);
-                    printAllDistances(sensorList);
-     
-       
-      // fireSpreadRouting(canvas,spl);
-       //emb.fireSpread(canvas);
-        
-   
-
  
     }
 
@@ -216,12 +273,16 @@ public  void net( ){
         @Override
         public void run() {
                    if(MyCanvas.checkFireStation()){ 
-              try {
-                  canvas.BCM2(sensorList.get(0),sensorList.get(sensorList.size()-1));
+       
+                       try {
+                           System.out.println("checking net");
+                           CheckSubNetworks.checkSubNetworks(true);
+                       
+                       } catch (InterruptedException ex) {
+                           Logger.getLogger(EmbeddedSystem.class.getName()).log(Level.SEVERE, null, ex);
+                       }
                    
-              } catch (InterruptedException ex) {
-                  Logger.getLogger(EmbeddedSystem.class.getName()).log(Level.SEVERE, null, ex);
-              }
+            
     
         }
         }
@@ -304,7 +365,8 @@ public  void net( ){
       
     }
 
-    public static void resetAll(){
+    public  void resetAll(){
+       
         for(Sensor s:sensorList){
             s.setForwardMsg(false);
            s.setState(true);
