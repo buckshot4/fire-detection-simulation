@@ -71,8 +71,18 @@ public class EmbeddedSystem implements Runnable {
            JLabel l= new JLabel();
             JTextField failSensorText = new JTextField(10);
            
+                JTextField ComR = new JTextField(20);
+            JTextField SenR = new JTextField(20);
+            JTextField Sensors = new JTextField(20);
+            JTextField Mode = new JTextField(20);
+            JTextField Height = new JTextField(20);
+            JTextField Width = new JTextField(20);
+           
+            
+            
             MyCanvas canvas = new MyCanvas();
-            sensorList=MyCanvas.createSensorList(600,500,110);
+           // sensorList=MyCanvas.createSensorList(700, 600, 110);
+            sensorList=MyCanvas.createSensorList2(MyCanvas.width,MyCanvas.height,MyCanvas.SensingRange, MyCanvas.CommunicationRange, MyCanvas.SensorAmount);
        
              emb.window.setSize(400,600);
              emb.window.setTitle("Control");
@@ -91,6 +101,229 @@ public class EmbeddedSystem implements Runnable {
              simulation.setVisible(true);
              
   
+             
+             
+             
+                 //GUI FOR HEIGHT 
+          JButton StopFireButton = new JButton("Start/Stop Fire");     
+          
+          StopFireButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("THIS IS IT");
+				System.out.println(MyCanvas.fireStop);
+			    if(MyCanvas.fireStop == false)
+				MyCanvas.fireStop  = true;	
+			    else 
+			    	MyCanvas.fireStop  = false;	
+
+			   System.out.println(MyCanvas.fireStop); 
+			}
+          });
+       
+          StopFireButton.setBounds(50,440,200,30);
+          window.getContentPane().add(StopFireButton);
+          
+          
+        //GUI FOR WIDTH
+          Width.setBounds(50,310,80,30);
+          window.getContentPane().add(Width);
+          JButton WidthButton = new JButton("Width");
+          
+          Width.addActionListener(new ActionListener() {
+    			@Override
+    			public void actionPerformed(ActionEvent e) {
+    				System.out.println("PRESSED");
+    				String widthStr = Width.getText();
+    				MyCanvas.width  = Integer.parseInt(widthStr);	
+    				EmbeddedSystem.Change();
+    				canvas.resetCanvas();		 
+    			}
+          });
+          
+          WidthButton.addActionListener(new ActionListener() {
+  			@Override
+  			public void actionPerformed(ActionEvent e) {
+  				System.out.println("PRESSED");
+  				String widthStr = Width.getText();
+  				MyCanvas.width  = Integer.parseInt(widthStr);	
+  				EmbeddedSystem.Change();
+  				canvas.resetCanvas();		 
+  			}
+        	  
+          });
+       
+          WidthButton.setBounds(150,310,200,30);
+          window.getContentPane().add(WidthButton);
+        
+          
+          //GUI FOR HEIGHT 
+          Height.setBounds(50,340,80,30);
+          window.getContentPane().add(Height);
+          JButton HeightButton = new JButton("Height");
+          
+          Height.addActionListener(new ActionListener() {
+  			@Override
+  			public void actionPerformed(ActionEvent e) {
+  				System.out.println("PRESSED");
+  				String heightStr = Height.getText();
+  				MyCanvas.height  = Integer.parseInt(heightStr);	
+  				EmbeddedSystem.Change();
+  				canvas.resetCanvas();		 
+  			}
+          	  
+            });
+          
+          HeightButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("PRESSED");
+				String heightStr = Height.getText();
+				MyCanvas.height  = Integer.parseInt(heightStr);	
+				EmbeddedSystem.Change();
+				canvas.resetCanvas();		 
+			}
+        	  
+          });
+       
+          HeightButton.setBounds(150,340,200,30);
+          window.getContentPane().add(HeightButton);
+        
+          
+          
+          //GUI FOR MODE (0 = GRID, 1 = COMPLETELY RANDOM, 2 = SEMI RANDOM (ALWAYS IN RANGE OF EACHOTHER), 3 = SEMI RANDOM GRID)
+          Mode.setBounds(50,370,80,30);
+          window.getContentPane().add(Mode);
+          JButton ModeButton = new JButton("Mode");
+          
+          Mode.addActionListener(new ActionListener() {
+  			@Override
+  			public void actionPerformed(ActionEvent e) {
+  				System.out.println("PRESSED");
+  				String ModeStr = Mode.getText();
+  				MyCanvas.mode  = Integer.parseInt(ModeStr);	
+  				EmbeddedSystem.Change();
+  				canvas.resetCanvas();		 
+  			}
+          	  
+            });
+          
+          ModeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("PRESSED");
+				String ModeStr = Mode.getText();
+				MyCanvas.mode  = Integer.parseInt(ModeStr);	
+				EmbeddedSystem.Change();
+				canvas.resetCanvas();		 
+			}
+        	  
+          });
+       
+          ModeButton.setBounds(150,370,200,30);
+          window.getContentPane().add(ModeButton);
+        
+          //GUI FOR SensorAmount
+          Sensors.setBounds(400,370,80,30);
+          window.getContentPane().add(Sensors);
+          JButton SensorsButton = new JButton("Sensors");
+          
+          Sensors.addActionListener(new ActionListener() {
+  			@Override
+  			public void actionPerformed(ActionEvent e) {
+  				System.out.println("PRESSED");
+  				if(MyCanvas.mode == 1 || MyCanvas.mode == 2) {
+  				String SensorsStr = Sensors.getText();
+  				MyCanvas.SensorAmount  = Integer.parseInt(SensorsStr);
+  				EmbeddedSystem.Change();
+  				canvas.resetCanvas();		
+  				}
+  			}
+          	  
+            });
+          
+          SensorsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("PRESSED");
+				if(MyCanvas.mode == 1 || MyCanvas.mode == 2) {
+				String SensorsStr = Sensors.getText();
+				MyCanvas.SensorAmount  = Integer.parseInt(SensorsStr);
+				EmbeddedSystem.Change();
+				canvas.resetCanvas();		
+				}
+			}
+        	  
+          });
+       
+          SensorsButton.setBounds(500,370,200,30);
+          window.getContentPane().add(SensorsButton);
+          
+        
+          //GUI FOR SENSINGRANGE
+          SenR.setBounds(400,310,80,30);
+          window.getContentPane().add(SenR);
+          JButton SenRButton = new JButton("Sensing Range");
+          
+          SenR.addActionListener(new ActionListener() {
+  			@Override
+  			public void actionPerformed(ActionEvent e) {
+  				System.out.println("PRESSED");
+  				String SenRStr = SenR.getText();
+  				MyCanvas.SensingRange  = Integer.parseInt(SenRStr);
+  				EmbeddedSystem.Change();
+  				canvas.resetCanvas();		 
+  		 
+  			}
+          	  
+            });
+          
+          SenRButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("PRESSED");
+				String SenRStr = SenR.getText();
+				MyCanvas.SensingRange  = Integer.parseInt(SenRStr);
+				EmbeddedSystem.Change();
+				canvas.resetCanvas();		 
+		 
+			}
+        	  
+          });
+          
+          SenRButton.setBounds(500,310,200,30);
+          window.getContentPane().add(SenRButton);
+          
+          
+          //GUI FOR COMMUNICATION RANGE
+          ComR.setBounds(400,340,80,30);
+          window.getContentPane().add(ComR);
+          JButton ComRButton = new JButton("Communication Range");
+          
+          ComR.addActionListener(new ActionListener() {
+  			@Override
+  			public void actionPerformed(ActionEvent e) {
+  				String ComRStr = ComR.getText();
+  				MyCanvas.CommunicationRange = Integer.parseInt(ComRStr);
+  				EmbeddedSystem.Change();
+                 canvas.resetCanvas();
+  			}
+          	  
+            });
+          
+          ComRButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String ComRStr = ComR.getText();
+				MyCanvas.CommunicationRange = Integer.parseInt(ComRStr);
+				EmbeddedSystem.Change();
+               canvas.resetCanvas();
+			}
+        	  
+          });
+          
+          ComRButton.setBounds(500,340,200,30);
+          window.getContentPane().add(ComRButton);
         /////////////////////////////////////////////////////////////      
              
  //weather button
@@ -105,7 +338,7 @@ public class EmbeddedSystem implements Runnable {
             }
            
        });
-       weather.setBounds(40,0,200,30);
+       weather.setBounds(40,100,200,30);
       window.getContentPane().add(weather);
            /////////////////////////////////////////////////////////////
        canvas.drawSensor();
@@ -174,11 +407,11 @@ public class EmbeddedSystem implements Runnable {
             }
            
        });
-          startSensor.setBounds(200, 200, 80, 30);
+          startSensor.setBounds(200, 100, 80, 30);
         emb.window.getContentPane().add(startSensor);
         
         
-       setFire.setBounds(40,100,200,30);
+       setFire.setBounds(40,400,200,30);
        
        emb.window.getContentPane().add(setFire);
         
@@ -263,9 +496,7 @@ public class EmbeddedSystem implements Runnable {
         //end grphics stuff
                    
                   emb.spl.findNeighbors(sensorList);    
-      
-                  
-                    initDistances(sensorList);
+                  initDistances(sensorList);
      //  fireSpreadRouting(canvas,spl);
        //emb.fireSpread(canvas);
         
@@ -385,6 +616,29 @@ public  void net( ){
        tFire.schedule(task, 0,900);
         
     }
+     
+       public static void Change() {
+    	
+    	EmbeddedSystem emb=new EmbeddedSystem();
+        ShortestPathList spl= new ShortestPathList();
+        emb.tFire.cancel();
+        emb.timerNET.cancel();
+        sensorList.clear();
+        sensorList=MyCanvas.createSensorList2(MyCanvas.height,MyCanvas.width,MyCanvas.SensingRange,MyCanvas.CommunicationRange,MyCanvas.SensorAmount);
+       emb.resetAll();
+       ShortestPathList.n_list.clear();
+        ShortestPathList.s_list.clear();
+                    
+            spl.findNeighbors(sensorList);
+          
+            initDistances(sensorList);
+       //failSensor.setText("");
+       startSensor.setText("");
+        emb.tFire= new Timer();
+     emb.timerNET= new Timer();
+     
+    }
+     
   public void update(long dT){
 
         

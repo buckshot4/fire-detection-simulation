@@ -35,6 +35,16 @@ public class MyCanvas {
     static LinkedList<Sensor> queue = new LinkedList<Sensor>(); 
     static ArrayList<Sensor> disconneted;
    
+     static boolean fireStop = false;
+    
+           static int height = 600;
+       static int width = 600;
+       static int SensorAmount = 60;
+       static int SensingRange = 50;
+       static int CommunicationRange = 120;
+       static int mode = 0;
+       
+    
     public MyCanvas(){
         disconneted=new ArrayList();
         Random r= new Random();
@@ -159,11 +169,11 @@ public class MyCanvas {
         for(int w = step; w < width; w = w + step){
             for(int h = step; h < height; h = h +step){
                 if((w == width-step) && (h == height-step) ){
-                    tempSensor = new Sensor(w+100, h+100, "fs",radious);
+                    tempSensor = new Sensor(w+100, h+100, "fs",radious,0);
                     
                 }
                 else{
-                    tempSensor = new Sensor(w+100, h+100, "s" + Integer.toString(name),radious);
+                    tempSensor = new Sensor(w+100, h+100, "s" + Integer.toString(name),radious,0);
                 }
                 tempSensor.setState(true);
                 
@@ -190,7 +200,7 @@ public class MyCanvas {
         for(int w = step; w < width; w = w + step + rand){
             for(int h = step; h < height; h = h +step + rand){
               
-                    tempSensor = new Sensor(w, h, "s" + Integer.toString(name),radious);
+                    tempSensor = new Sensor(w, h, "s" + Integer.toString(name),radious,0);
                     name ++;
                
                 //tempSensor.setState(false);
@@ -207,6 +217,118 @@ public class MyCanvas {
         
         return sensorRandomList;
     }
+         
+         
+                  public static ArrayList<Sensor> createSensorList2(int width, int height, int senR, int comR, int numOfSensors){
+
+                ArrayList sensorList = new ArrayList<> ();
+                Sensor tempSensor = null;
+                Sensor tempSens2 = null;
+                Random random = new Random();
+                
+                //here we select 50 as every 50 meters we put a sensor
+                int step = 50;
+                int name = 0;
+                
+                //grid system
+                if(mode==0)
+                for(int w = step; w < width; w = w + step){
+                    for(int h = step; h < height; h = h +step){
+                    	int n = random.nextInt(comR/5);
+                        if((w == width-step) && (h == height-step) ){
+                            tempSensor = new Sensor(w+100, h+100, "fs", senR, comR+n);                  
+                        }
+                        else{
+                            tempSensor = new Sensor(w+100, h+100, "s" + Integer.toString(name), senR, comR+n);
+                        }
+                        tempSensor.setState(true);
+                        
+                        sensorList.add(tempSensor);
+                        name ++;
+                    }
+                }
+                
+                //total random
+                if(mode==1) {
+                    
+                    for(int i = 0; i < numOfSensors-1; ++i){
+                    	int w = random.nextInt(width);
+                    	int h = random.nextInt(height);
+                        	int n = random.nextInt(comR/5);
+                            tempSensor = new Sensor(w, h, "s" + Integer.toString(name), senR, comR+n);
+                            tempSensor.setState(true);                        
+                            sensorList.add(tempSensor);
+                            name ++;
+                        }
+                    tempSensor = new Sensor(width, height, "fs", senR, comR);  
+                    tempSensor.setState(true);                        
+                    sensorList.add(tempSensor); 
+                }           
+                
+                
+                int midX = width/2;
+                int midY = height/2;
+                //semi random
+                if(mode==2) {
+                    
+                    int preX = midX;
+                    int preY = midY;
+                    for(int i = 0; i < numOfSensors-1; ++i){
+                    	int n = random.nextInt(comR/5);
+                    	int w = (random.nextInt(comR/2)-comR/4)*2;
+                    	int h = (random.nextInt(comR/2)-comR/4)*2;
+                    	
+                    	if(preX > height || preX < 0 || preY > width || preY < 0) {
+                    		preX = midX+w; 
+                    		preY = midY+h;          	
+                    	}                             	
+                    	//int w = random.nextInt(comR/2-senR/2)+senR/3;
+                    	//int h = random.nextInt(comR/2-senR/2)+senR/3;     
+                            tempSensor = new Sensor(preX, preY, "s" + Integer.toString(name), senR, comR+n); 
+                        	preX = preX+w;
+                        	preY = preY+h;
+                            tempSensor.setState(true);                        
+                            sensorList.add(tempSensor);                         
+                            name ++;
+                        }
+                    tempSensor = new Sensor(preX, preY, "fs", senR, comR);  
+                    tempSensor.setState(true);                        
+                    sensorList.add(tempSensor); 
+                }   
+                
+                
+                
+                midX = width/2;
+                midY = height/2;
+                int preX = midX;
+                int preY = midY;
+                // semi random grid
+                if(mode==3) { 
+                    //for(int i = 0; i < numOfSensors-1; ++i){
+                    for(int w = 50; w < width; w = w+random.nextInt(comR/3)+comR/5){
+                        for(int h = 50; h < height; h = h+random.nextInt(comR/3)+comR/5){
+                        	preX = w +(random.nextInt(comR/2)-comR/2);
+                        	preY = h + (random.nextInt(comR/2)-comR/2);
+
+                    	int n = random.nextInt(comR/5);
+                    	   
+                            tempSensor = new Sensor(preX, preY, "s" + Integer.toString(name), senR, comR+n); 
+                        	//preX = preX+w;
+                        	//preY = preY+h;
+                            tempSensor.setState(true);                        
+                            sensorList.add(tempSensor);                         
+                            name ++;
+                        }
+                    }
+                    tempSensor = new Sensor(width-comR/3, height-comR/3, "fs", senR, comR+comR/5);  
+                    tempSensor.setState(true);                        
+                    sensorList.add(tempSensor); 
+                }
+                   
+ 
+                return sensorList;
+            }
+         
       public void drawThickLine(Sensor s,ArrayList<Sensor> l){
             Graphics g = surface.getGraphics();
             int thickness=5;
@@ -358,17 +480,22 @@ public class MyCanvas {
             for(int i=0;i<sensorList.size(); i++){
                 s=sensorList.get(i);
                 if(s.getTypeOfSensor().equalsIgnoreCase("fs")){
-                     g.setColor(Color.BLUE);
-                    drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.radious);
-                     s=sensorList.get(i);
-                    s.setRatio(s.radious-2);
+                     g.setColor(Color.BLACK);
+                      s.setRatio(s.radious-2);
+                    
                     drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
-                  
+                   // drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.comR);
+                    drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.radious);
+                       g.setColor(Color.RED);
+                     drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.comR);
+                     s=sensorList.get(i);
+                   
                 fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
                 }else if(s.getState()){
                 g.setColor(Color.BLACK);
-               drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
-              
+                drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
+                 g.setColor(Color.GREEN);
+                drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.comR);
                 g.setColor(Color.BLACK);
                 fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 5);
             }
@@ -423,11 +550,21 @@ public class MyCanvas {
       
       
      public void setFire(){
+          
           Graphics g = surface.getGraphics();
          Color c=new Color(1f,0f,0f,.4f );
          g.setColor(c);
          fillCenteredCircle((Graphics2D) g,fire.getPositionX(),fire.getPositonY(),fire.getRange());
+         if(fireStop ==false)
+         {
+        	 System.out.println("fuck");
          fire.setRange((fire.getRange()+20));
+     }
+         else 
+         {
+        	 System.out.println("fuckfuck");
+        	fire.setRange((fire.getRange()));
+     }
             g.dispose();
             view.repaint();
      }

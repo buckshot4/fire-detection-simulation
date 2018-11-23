@@ -42,7 +42,7 @@ public class ShortestPathList {
                     distance = Math.sqrt(Math.pow(d1X-d2X,2) + Math.pow(d1Y-d2Y,2));
                     
                    // System.out.print("state:  "+ s.getState()+"   ");
-                    if(distance < s.radious/2){
+                    if(distance < s.comR/2){
                         
                         //System.out.println(s.typeOfSensor + " and " + otherSensor.typeOfSensor + " are neighbors");
                         s.neighbourSensor.add(otherSensor);
