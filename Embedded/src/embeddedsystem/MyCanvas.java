@@ -189,13 +189,10 @@ public class MyCanvas {
         
         for(int w = step; w < width; w = w + step + rand){
             for(int h = step; h < height; h = h +step + rand){
-                if((w == step) && (h == step) ){
-                    tempSensor = new Sensor(w, h, "fs",radious);
-                }
-                else{
+              
                     tempSensor = new Sensor(w, h, "s" + Integer.toString(name),radious);
                     name ++;
-                }
+               
                 //tempSensor.setState(false);
                 rand = r.nextInt(10-0) + 0;
                 
@@ -203,6 +200,7 @@ public class MyCanvas {
                 
             }
         }
+        sensorRandomList.get(sensorRandomList.size()-1).setTypeOfSensor("fs");
         
         
         

@@ -98,6 +98,9 @@ public class Sensor {
     public void setForwardMsg(boolean newMsg){
         forwardMsg=newMsg;
     }
+    public void setTypeOfSensor(String newType){
+        typeOfSensor=newType;
+    }
     
     //////////////////////////////
    /* SHORTEST PATH CODE BLOCK */

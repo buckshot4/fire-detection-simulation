@@ -14,6 +14,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -28,8 +31,11 @@ public class CheckSubNetworks {
 
    static  Sensor fireS= sensorList.get(sensorList.size()-1);
    static ArrayList <Sensor> remainedSensors= new ArrayList();
- 
-    
+   
+   
+   
+   
+   
      public static void checkNetworkCuts(Sensor currentSensor,subNet sb) throws InterruptedException {
    	
    		  	checkNetworkCutThread(currentSensor ,currentSensor,sb);   
@@ -45,7 +51,10 @@ public class CheckSubNetworks {
         g.setColor(Color.GREEN);
         
                 int numOfNeighbors1 = currentSensor.getNeighborNumber();
-               
+                if(numOfNeighbors1==0){
+                      sb.setCon(false);
+                    checkNet(sb);
+                }
                     
      	
  		//goes through all neighbors and adds them to the queue if their state is not active/false. 
@@ -61,14 +70,7 @@ public class CheckSubNetworks {
      		//the state of the currentsensor is changed so it cannot be added to the queue again. 
      		currentSensor.setForwardMsg(true);
               
-     		try {
-     			
-   			//sleep 1 seconds
-   			Thread.sleep(200);
-   			
-   		} catch (InterruptedException e) {
-   			e.printStackTrace();
-   		}
+     	
      		
                
                 MyCanvas.fillCenteredCircle((Graphics2D) g, currentSensor.x,currentSensor.y, 9);
@@ -140,18 +142,18 @@ public class CheckSubNetworks {
 
      }
      public static void checkSubNetworks(boolean first) throws InterruptedException{
-         
+     
          
             
             int sizeD=disconnetedNet.size();
           
             
             if(sizeD>0){
-                
+               
             thread= new MyThread(disconnetedNet.get(0),fireS);
             disconnetedNet.clear();
              
-            thread.start();
+            thread.run();
            
           
              thread.join();
@@ -161,33 +163,97 @@ public class CheckSubNetworks {
               thread= new MyThread(sensorList.get(0),fireS);
              
              
-            thread.start();
+            thread.run();
            
              thread.join();
+    
+          
             }else{
-       
-                
-         printSubNets();
-         
+                thread.stop();
             }
          
          
      }
+    
     public static void printSubNets(){
+      //   eliminateDoubles();
+       JFrame window= EmbeddedSystem.getFrame();
+       String connected= "connected";
+       String disconneted= "disconneted";
         ArrayList <Sensor> sL;
         for(int j=0;j<subNetList.size();j++){
+            JLabel l= new JLabel();
+            //JLabel lNumber= new JLabel();
             sL= subNetList.get(j).getSubNet();
-           
-               System.out.println("SubNetwork "+j+" sensors: ");
-            for(int i=0;i<sL.size();i++){
+            if(subNetList.get(j).getConnectedToFS()){
+                l.setText("SubNetwork "+j+" has "+sL.size()+"sensors "+ connected );
+            }else{
+                 l.setText("SubNetwork "+j+" has "+sL.size()+"sensors "+ disconneted );
+            }
+            
+           System.out.println("SubNetwork "+j+" sensors: ");
+         
+            l.setBounds(80 ,250+(j*20),200, 3000);
+             window.getContentPane().add(l);
+            
+              // window.getContentPane().add(lNumber);
              
-                System.out.print(sL.get(i).getTypeOfSensor()+", ");
+              //lNumber.setBounds(80,250+(j*20),200,300);
+            for(int i=0;i<sL.size();i++){
+               // JLabel sensor= new JLabel();
+                //sensor.setText(sL.get(i).getTypeOfSensor()+", ");
+             
+                System.out.println(sL.get(i).getTypeOfSensor()+", ");
             }
             
         }
+       
         
         
     }
+    public static void resetCheckNet(){
+        remainedSensors.clear();
+        disconnetedNet.clear();
+        subNetList.clear();
+        
+        
+    }
+    /*
+     public static void eliminateDoubles(){
+            ArrayList <Sensor> sL;
+               ArrayList <Sensor> sLNext;
+               int legth=0;
+            for(int j=0;j<subNetList.size()-2;j++){
+                        sL= subNetList.get(j).getSubNet();
+                        sLNext=subNetList.get(j+1).getSubNet();
+                        if(sL.size()>=sLNext.size()){
+                            legth= sLNext.size()-1;
+                               for(int i=0;i<legth;i++){
+                            if(sLNext.contains(sL.get(i))){
+                                System.out.print("duplicate");
+                                 subNetList.remove(j+1);
+                            }
+                      }  
+
+                        }else{
+                           
+                        legth=sL.size()-1;
+                         System.out.print("HERE"+legth);
+                            for(int i=0;i<legth;i++){
+                            if(sL.contains(sLNext.get(i))){
+                                System.out.print("duplicate");
+                                subNetList.remove(j+1);
+                               
+                            }
+                      }  
+                        }
+                     
+                      
+                        
+            }
+            
+     }
+    */
     
     
    

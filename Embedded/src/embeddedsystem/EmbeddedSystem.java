@@ -49,6 +49,7 @@ public class EmbeddedSystem implements Runnable {
  private JLabel milli;
   static JTextField startSensor ;
   private    ShortestPathList spl;
+  static  JFrame window;
  public EmbeddedSystem(){
    seconds= new JLabel();
    minutes= new JLabel();
@@ -57,6 +58,7 @@ public class EmbeddedSystem implements Runnable {
  tFire= new Timer();
     timerNET= new Timer();
     spl  = new ShortestPathList();
+    window= new JFrame();
  
  }
  
@@ -64,19 +66,20 @@ public class EmbeddedSystem implements Runnable {
             
             EmbeddedSystem emb=new EmbeddedSystem();
             JFrame simulation= new JFrame();
-           JFrame window= new JFrame();
+          
            JPanel panel =new JPanel();
-            JTextField failSensor = new JTextField(5);
+           JLabel l= new JLabel();
+            JTextField failSensorText = new JTextField(10);
            
             MyCanvas canvas = new MyCanvas();
             sensorList=MyCanvas.createSensorList(600,500,110);
        
-             window.setSize(200,400);
-             window.setTitle("Control");
-             window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-              window.setContentPane(panel);
+             emb.window.setSize(400,600);
+             emb.window.setTitle("Control");
+             emb.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            //  window.setContentPane(panel);
              //window.setLocationByPlatform(true);
-             window.setVisible(true);
+             emb.window.setVisible(true);
           
           
           
@@ -88,7 +91,7 @@ public class EmbeddedSystem implements Runnable {
              simulation.setVisible(true);
              
   
-         
+        /////////////////////////////////////////////////////////////      
              
  //weather button
        JButton weather = new JButton("weather");
@@ -102,20 +105,21 @@ public class EmbeddedSystem implements Runnable {
             }
            
        });
-       weather.setBounds(0,0,200,30);
-       window.getContentPane().add(weather);
+       weather.setBounds(40,0,200,30);
+      window.getContentPane().add(weather);
+           /////////////////////////////////////////////////////////////
        canvas.drawSensor();
         
-       
+          /////////////////////////////////////////////////////////////  
         
-        failSensor.setBounds(0,40,20,30);
-        window.getContentPane().add(failSensor);
+        failSensorText.setBounds(250,40,80,30);
+        emb.window.getContentPane().add(failSensorText);
          JButton failSensorButton = new JButton("fail sensors");
         failSensorButton.addActionListener(new ActionListener(){
           @Override
             public void actionPerformed(ActionEvent e) {
                 
-               String failSensorStr = failSensor.getText();
+               String failSensorStr = failSensorText.getText();
           
                 MyCanvas.randomFail(Integer.parseInt(failSensorStr));
              
@@ -124,24 +128,44 @@ public class EmbeddedSystem implements Runnable {
            
        });
   
-        failSensorButton.setBounds(0,40,200,30);
-        window.getContentPane().add(failSensorButton);
+        failSensorButton.setBounds(40,40,200,30);
+        emb.window.getContentPane().add(failSensorButton);
         
-          
+            /////////////////////////////////////////////////////////////   
          JButton checkNet = new JButton("checkNet");
         checkNet.addActionListener(new ActionListener(){
           @Override
             public void actionPerformed(ActionEvent e) {
                 CheckSubNetworks.remainedSensors=sensorList;
+                  
                emb.net();
+               
+             
+            }
+           
+       });
+ 
+        checkNet.setBounds(40,80,200,30);
+        window.getContentPane().add(checkNet);
+        
+         /////////////////////////////////////////////////////////////          PRINT SUBNET
+         
+          JButton displaySubNet = new JButton("print sub network");     
+        displaySubNet.addActionListener(new ActionListener(){
+          @Override
+            public void actionPerformed(ActionEvent e) {
+                CheckSubNetworks.printSubNets();
              
             }
            
        });
   
-        checkNet.setBounds(0,50,200,30);
-        window.getContentPane().add(checkNet);
-        
+        displaySubNet.setBounds(240,80,200,30);
+       window.getContentPane().add(displaySubNet);
+       
+       
+            /////////////////////////////////////////////////////////////       RANDOM FIRE
+       
        JButton setFire = new JButton("Random Fire");
        setFire.addActionListener(new ActionListener(){
           @Override
@@ -150,38 +174,41 @@ public class EmbeddedSystem implements Runnable {
             }
            
        });
-          startSensor.setBounds(0, 70, 80, 30);
-        window.getContentPane().add(startSensor);
+          startSensor.setBounds(200, 200, 80, 30);
+        emb.window.getContentPane().add(startSensor);
         
         
-       setFire.setBounds(0,70,200,30);
+       setFire.setBounds(40,100,200,30);
        
-       window.getContentPane().add(setFire);
+       emb.window.getContentPane().add(setFire);
         
+            /////////////////////////////////////////////////////////////
+       
          JButton restart = new JButton("restart");
         restart.addActionListener(new ActionListener(){
           @Override
             public void actionPerformed(ActionEvent e) {
              
-                 emb.tFire.cancel();
+                emb.tFire.cancel();
                 emb.timerNET.cancel();
                 sensorList.clear();
                 sensorList=MyCanvas.createSensorList(600,500,110);
-               canvas.resetCanvas();
-              
-               emb.resetAll();
-               ShortestPathList.n_list.clear();
+                canvas.resetCanvas();
+                emb.resetAll();
+                ShortestPathList.n_list.clear();
                 ShortestPathList.s_list.clear();
                 
-                         
-                    emb.spl.findNeighbors(sensorList);
-                  
-                    initDistances(sensorList);
+                emb.spl.findNeighbors(sensorList);
+                initDistances(sensorList);
                
-               startSensor.setText("");
-               emb.tFire= new Timer();
-            emb.timerNET= new Timer();
-                failSensor.setText("");
+                
+                startSensor.setText("");
+                 emb.tFire= new Timer();
+                 emb.timerNET= new Timer();
+                 failSensorText.setText("");
+                
+                 
+                 CheckSubNetworks.resetCheckNet();
               /* if(disconneted.size()>0){
                for(Sensor s: disconneted){
                    System.out.println("DISC"+s.getTypeOfSensor());
@@ -192,11 +219,11 @@ public class EmbeddedSystem implements Runnable {
            
        });
   
-        restart.setBounds(0,120,200,30);
-        panel.add(restart);
+        restart.setBounds(40,200,200,30);
+        window.add(restart);
         
         
-     
+          /////////////////////////////////////////////////////////////
          
          
         JButton shoethestPath = new JButton("shoethestPath");
@@ -228,11 +255,11 @@ public class EmbeddedSystem implements Runnable {
             }
            
        });
-       shoethestPath.setBounds(1000,150,200,30);
-       window.getContentPane().add(shoethestPath);
+       shoethestPath.setBounds(40,120,200,30);
+       emb.window.getContentPane().add(shoethestPath);
     
   
-  
+       /////////////////////////////////////////////////////////////
         //end grphics stuff
                    
                   emb.spl.findNeighbors(sensorList);    
@@ -249,13 +276,14 @@ public class EmbeddedSystem implements Runnable {
         window.getContentPane().add(emb.minutes);
         window.getContentPane().add(emb.milli);
      
-       
+       window.getContentPane().add(l);
           
           //Clock timer
-         emb.minutes.setBounds(0,300,200,30);
-         emb.seconds.setBounds(20,300,200,30);
-         emb.milli.setBounds(40, 300, 200, 30);
-       
+         emb.minutes.setBounds(60,200,200,30);
+         emb.seconds.setBounds(80,200,200,30);
+        emb.milli.setBounds(100 ,200,200, 30);
+        
+        l.setBounds(120,200,200,30);
          emb.startTimer();
  
     }
@@ -264,7 +292,9 @@ public class EmbeddedSystem implements Runnable {
       
       
       
-      
+public static JFrame getFrame(){
+    return window;
+}
       
 public  void net( ){
       
@@ -284,7 +314,10 @@ public  void net( ){
                    
             
     
-        }
+        }else{
+                           JOptionPane.showMessageDialog(window,
+                      "FireStation disconetted");
+                   }
         }
   
     };
@@ -336,7 +369,7 @@ public  void net( ){
            canvas.setFire();
            
            s=canvas.distanceFireSensor();
-          if ((s!=null)){
+         /* if ((s!=null)){
               try {
                   
                   message=false;
@@ -345,7 +378,8 @@ public  void net( ){
                   Logger.getLogger(EmbeddedSystem.class.getName()).log(Level.SEVERE, null, ex);
               }
            }
-        }}
+        }*/
+}}
     };
               
        tFire.schedule(task, 0,900);
@@ -384,10 +418,11 @@ public  void net( ){
         // if we just want to pause the timer dont throw away the change in time, instead store it
        
     }
-    public void startThread(){
+ /*   public void startThread(){
          myThread = new Thread(this);
         myThread.start();
     }
+*/
   public void startTimer() {
         running = true;
 

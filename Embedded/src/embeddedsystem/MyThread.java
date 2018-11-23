@@ -25,6 +25,7 @@ import java.util.logging.Logger;
          
          
      }
+    
     public void run(){
          try {
              System.out.print("THREAD");
@@ -33,4 +34,5 @@ import java.util.logging.Logger;
              Logger.getLogger(MyThread.class.getName()).log(Level.SEVERE, null, ex);
          }
     }
+   
   }
