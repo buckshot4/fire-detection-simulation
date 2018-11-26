@@ -700,7 +700,7 @@ public void net( ){
         @Override
         public void run() {
             boolean message=true;
-            if(message){
+           // if(message){
           Sensor s=null; //sensorList.get(sensorList.size()-1);
             Sensor fs= sensorList.get(sensorList.size()-1);
            canvas.setFire();
@@ -715,10 +715,10 @@ public void net( ){
                   Logger.getLogger(EmbeddedSystem.class.getName()).log(Level.SEVERE, null, ex);
               }
            }
-}}
+}
     };
               
-       tFire.schedule(task, 0,900);
+       tFire.schedule(task, 0,600);
         
     }
      

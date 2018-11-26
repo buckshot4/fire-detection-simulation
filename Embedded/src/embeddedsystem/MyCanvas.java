@@ -41,10 +41,10 @@ public class MyCanvas {
       //sensor layout and info
        static int height = 600;
        static int width = 600;
-       static int SensorAmount = 40;
+       static int SensorAmount = 121;
        static int SensingRange = 50;
        static int CommunicationRange = 120;
-       static int mode = 2;
+       static int mode = 1;
        
     
     public MyCanvas(){
