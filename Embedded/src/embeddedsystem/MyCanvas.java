@@ -31,18 +31,20 @@ public class MyCanvas {
     static JLabel view;
     static BufferedImage surface;
     static  ArrayList<Sensor> sensorList =new ArrayList();
+    static ArrayList<Sensor> failedS= new ArrayList();
     private Fire fire;
     static LinkedList<Sensor> queue = new LinkedList<Sensor>(); 
     static ArrayList<Sensor> disconneted;
    
      static boolean fireStop = false;
     
-           static int height = 600;
+      //sensor layout and info
+       static int height = 600;
        static int width = 600;
-       static int SensorAmount = 60;
+       static int SensorAmount = 40;
        static int SensingRange = 50;
        static int CommunicationRange = 120;
-       static int mode = 0;
+       static int mode = 2;
        
     
     public MyCanvas(){
@@ -67,12 +69,68 @@ public class MyCanvas {
      public void changeElement(Sensor s){
            Graphics g = surface.getGraphics();
            
-            g.setColor(Color.ORANGE);
+            g.setColor(Color.BLACK);
            fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 10);
            
             g.dispose();
             view.repaint();
      }
+     
+    
+     public void drawSubNetwork(ArrayList<Sensor> sr){
+           Graphics g = surface.getGraphics();
+         Sensor s;
+        g.setColor(Color.WHITE);
+        g.fillRect(0,0,800,700);
+      //FailedSensors
+        for(int i=0;i<failedS.size();i++){
+            s=failedS.get(i);
+                       g.setColor(Color.RED);
+                     drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.comR);
+           
+                      fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
+        }
+       //DRAW FS
+              if(sensorList.get(sensorList.size()-1).getTypeOfSensor().equalsIgnoreCase("fs")){
+                  s=sensorList.get(sensorList.size()-1);
+                       g.setColor(Color.RED);
+                     drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.comR);
+                    
+                     g.setColor(Color.BLUE);
+                      fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
+              }
+        //subNet
+            for(int i=0;i<sr.size(); i++){
+                s=sr.get(i);
+          
+                g.setColor(Color.BLACK);
+                drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.senR);
+                 g.setColor(Color.BLUE);
+               drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.comR);
+                g.setColor(Color.BLACK);
+                fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 5);
+      
+        }
+            for(int i=0;i<sensorList.size();i++){
+                Sensor sensor=sensorList.get(i);
+                if((sr.contains(sensor))||(failedS.contains(sensor))){
+                    
+                }else{
+                 g.setColor(Color.PINK);
+                drawCenteredCircle ((Graphics2D) g,sensor.getPositionX(),sensor.getPositionY(), sensor.senR);
+                 g.setColor(Color.PINK);
+               drawCenteredCircle ( (Graphics2D)g,sensor.getPositionX(),sensor.getPositionY(), sensor.comR);
+                g.setColor(Color.PINK);
+                fillCenteredCircle((Graphics2D) g,sensor.getPositionX(),sensor.getPositionY(), 5);
+                }
+            }
+            
+           g.dispose();
+         view.repaint();  
+         
+         
+     }
+     
      
      public static void BCM(Sensor currentSensor, Sensor fs) throws InterruptedException {
    	  if(currentSensor.getState()==true) {
@@ -107,14 +165,15 @@ public class MyCanvas {
      		//the state of the currentsensor is changed so it cannot be added to the queue again. 
      		currentSensor.setForwardMsg(true);
                
-     		try {
+     			try {
      			
    			//sleep 1 seconds
    			Thread.sleep(200);
    			
    		} catch (InterruptedException e) {
    			e.printStackTrace();
-   		}
+                }
+     		
      		
                
                 fillCenteredCircle((Graphics2D) g, currentSensor.x,currentSensor.y, 9);
@@ -130,7 +189,7 @@ public class MyCanvas {
                     fillCenteredCircle((Graphics2D) g, s.x,s.y, 7);
      			System.out.println("Reached FS");
      			System.out.print("fire started at: ");
-     			setJlabel(firestart.typeOfSensor);
+     			//setJlabel(firestart.typeOfSensor);
                        
                        
  		}  		
@@ -451,7 +510,7 @@ public class MyCanvas {
         
          for(int i=0;i<sensorList.size(); i++){
          s=sensorList.get(i);
-         s.setRatio(s.radious-power);
+         s.setComRange(s.comR-power);
         // drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), (s.ratio-power));
          }
          
@@ -460,7 +519,7 @@ public class MyCanvas {
             view.repaint();
      }
      public void resetCanvas(){
-            Graphics g = surface.getGraphics();
+         Graphics g = surface.getGraphics();
          Sensor s;
          g.setColor(Color.WHITE);
         g.fillRect(0,0,800,700);
@@ -481,20 +540,20 @@ public class MyCanvas {
                 s=sensorList.get(i);
                 if(s.getTypeOfSensor().equalsIgnoreCase("fs")){
                      g.setColor(Color.BLACK);
-                      s.setRatio(s.radious-2);
+                      s.setSenRange(s.senR-2);
                     
-                    drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
+                    drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.senR);
                    // drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.comR);
-                    drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.radious);
+                    drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.senR);
                        g.setColor(Color.RED);
                      drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.comR);
                      s=sensorList.get(i);
-                   
-                fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
+                     g.setColor(Color.BLUE);
+                      fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
                 }else if(s.getState()){
                 g.setColor(Color.BLACK);
-                drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.radious);
-                 g.setColor(Color.GREEN);
+                drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.senR);
+                 g.setColor(Color.BLUE);
                 drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.comR);
                 g.setColor(Color.BLACK);
                 fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 5);
@@ -526,7 +585,7 @@ public class MyCanvas {
         double d2X = otherSensor.x;
         double d2Y = otherSensor.y;
         int fireRange=fire.getRange();
-       int fireDetected=(int)((fireRange/2)+(otherSensor.radious/2));
+       int fireDetected=(int)((fireRange/2)+(otherSensor.senR/2));
        
         
         double distance = Math.sqrt(Math.pow(d1X-d2X,2) + Math.pow(d1Y-d2Y,2));
@@ -569,22 +628,31 @@ public class MyCanvas {
             view.repaint();
      }
         public static void randomFail(int howMany){
+        
+        
           
-            Graphics g = surface.getGraphics();
-             g.setColor(Color.RED);
+        int number=0;
+        Graphics g = surface.getGraphics();
+        g.setColor(Color.RED);
         Random random= new Random();
         for(int i=0;i<howMany;i++){
         int n=random.nextInt(sensorList.size());
-             if( sensorList.get(n).getTypeOfSensor().equals("fs")||(n==0)){
+             if(sensorList.get(n).getTypeOfSensor().equals("fs")||(n==0)){
             i--;
             }else{
-                    
-                    
-                    
+             number++;
+             if(failedS.contains(sensorList.get(n).getTypeOfSensor())){
+                 i--;
+             }else{
+         failedS.add(sensorList.get(n));
+         
+         System.out.println(number+"  "+sensorList.get(n).getTypeOfSensor());    
         sensorList.get(n).setState(false);
         fillCenteredCircle((Graphics2D) g,sensorList.get(n).getPositionX(),sensorList.get(n).getPositionY(),8);
         }
+             }
         }
+        System.out.print("Size faile"+failedS.size());
         g.dispose();
          view.repaint();
     }

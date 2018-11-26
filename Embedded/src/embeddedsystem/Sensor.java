@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package embeddedsystem;
 
 import static embeddedsystem.MyCanvas.surface;
@@ -19,7 +14,8 @@ public class Sensor {
     int x;
     int y;
     String typeOfSensor;
-    int radious;//message radious
+    int senR;
+    int comR;
     int detectionR;//detect fire radious
     boolean active;//works or not
     ArrayList<Sensor> neighbourSensor;
@@ -33,13 +29,14 @@ public class Sensor {
     ArrayList<Sensor> sp_list;
     int hops;
     ArrayList<Sensor> originNeighbor;
-    int comR;
+   
      
-    public Sensor(int xP,int YP,String tS, int ratioN,int comRange){
+    public Sensor(int xP,int YP,String tS, int senRange,int comRange){
         x= xP;
         y=YP;
         typeOfSensor=tS;
-        radious=ratioN;
+        senR = senRange;
+        comR = comRange;
         neighbourSensor= new ArrayList();
         neighborDistance = new ArrayList();
         spl=new ShortestPathList();
@@ -47,9 +44,9 @@ public class Sensor {
         forwardMsg = false;
         hops = 99;
         originNeighbor = new ArrayList<>();
-        detectionR=ratioN/2;
+        detectionR=senR/2;
         active=true;
-        comR = comRange;
+      
         
     } 
     public int getPositionX(){
@@ -76,11 +73,18 @@ public class Sensor {
     public boolean getState(){
         return active;
     }
-    public void setRatio(int newRad){
-        radious= newRad;
+    public void setSenRange(int newSenR){
+        senR= newSenR;
     }
-    public int getRatio(){
-        return radious;
+    public int getSenRange(){
+        return senR;
+    }
+    public void setComRange(int newComR) {
+    	comR = newComR;
+    }
+    
+    public int getComRange() {
+    	return comR;
     }
     
     public void setNeighbourSeonsor(ArrayList<Sensor> newNeighbours){

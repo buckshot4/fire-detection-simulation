@@ -25,8 +25,7 @@ import java.util.logging.Logger;
          
          
      }
-    
-    public void run(){
+      public void run(){
          try {
              System.out.print("THREAD");
              CheckSubNetworks.checkNetworkCutThread(s, fs,sb);
@@ -36,3 +35,8 @@ import java.util.logging.Logger;
     }
    
   }
+ 
+    
+
+    
+    
