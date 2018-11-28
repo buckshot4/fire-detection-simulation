@@ -312,6 +312,36 @@ public class CheckSubNetworks {
         
         
     }
+    
+    public static boolean myContains(Sensor s, ArrayList<Sensor> list){
+        for(Sensor sen:list){
+            if(sen.getTypeOfSensor().equalsIgnoreCase(s.getTypeOfSensor())&&sen.getState()){
+                return true;
+            }
+        }
+        return false;
+    }
+    public static boolean checkSesnorInSubNet(Sensor s){
+    	//System.out.print("size:" + subNetList.size());
+        for( subNet sub: subNetList){
+            if(sub.getConnectedToFS()){
+                ArrayList<Sensor> list= sub.getSubNet();
+               
+            
+               if(myContains(s,list)){
+                    //System.out.print("connected");
+                    return true;
+                }else{
+                      //System.out.print("disconneted");
+                      return false;
+
+                }
+            }
+        } 
+          return false;
+                
+       
+    }
     }
  
 

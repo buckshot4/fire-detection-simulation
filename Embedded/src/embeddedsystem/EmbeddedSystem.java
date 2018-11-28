@@ -50,6 +50,7 @@ public class EmbeddedSystem implements Runnable {
  private boolean running = false;
  private long summedTime = 0;
  private Timer tFire;
+ private Timer timerRouting;
  private Timer timerNET;
  private JLabel seconds;
  private JLabel minutes;
@@ -68,6 +69,7 @@ public class EmbeddedSystem implements Runnable {
  startSensor = new JTextField(5);
  tFire= new Timer();
  timerNET= new Timer();
+ timerRouting = new Timer();
  spl  = new ShortestPathList();
  window= new JFrame();
  //listThread = new LinkedList<MyRunnable>();
@@ -119,14 +121,15 @@ public class EmbeddedSystem implements Runnable {
              window.setContentPane(op.viewWindow);
              window.setLocationByPlatform(true);
              window.setVisible(true);
-          
+             window.pack();
           
           
              simulation.setSize(800,700);
              simulation.setTitle("Embedded");
              simulation.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-             simulation.setContentPane( canvas.view);
+             simulation.setContentPane(canvas.view);
              simulation.setLocationByPlatform(true);
+        	 simulation.pack();
              simulation.setVisible(true);
              
   
@@ -139,6 +142,7 @@ public class EmbeddedSystem implements Runnable {
           StopFireButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				emb.timerRouting.cancel();
 				System.out.println("THIS IS IT");
 				System.out.println(MyCanvas.fireStop);
 			    if(MyCanvas.fireStop == false)
@@ -162,7 +166,10 @@ public class EmbeddedSystem implements Runnable {
     			public void actionPerformed(ActionEvent e) {
     				System.out.println("PRESSED");
     				String colorSensorStr = cS.getText();
-                                
+                               
+    				checkShortestPath();
+    				
+    				/*
                                 for(Sensor s: sensorList){
                                     if(s.getTypeOfSensor().equalsIgnoreCase(colorSensorStr)){
                                        // canvas.changeElement(s);
@@ -171,13 +178,87 @@ public class EmbeddedSystem implements Runnable {
                                      canvas.drawSubNetwork(s.getNeighbourSeonsor());
                                     }
                                 }
+                                */
     					 
     			}
           });
           
           colorSensorB.setBounds(150,510,80,30);
            window.getContentPane().add(colorSensorB);
+  
            
+           JButton SensorLabelButton = new JButton("Show Sensor Label");   
+           SensorLabelButton.addActionListener(new ActionListener() {
+     			@Override
+     			public void actionPerformed(ActionEvent e) {
+     				 //emb.Change();
+     	              canvas.resetCanvas();   
+     	              			
+   				 Sensor s;
+	          	   for(int i=0;i<sensorList.size(); i++){
+	                     s=sensorList.get(i);
+	                     
+	             JLabel Sensorname = new JLabel(s.typeOfSensor);
+	             Sensorname.setBounds(s.getPositionX()+5,s.getPositionY()-50,100,100);
+	             simulation.getContentPane().add(Sensorname);
+     			}
+     			}
+           });
+           
+           SensorLabelButton.setBounds(450,570,200,30);
+            window.getContentPane().add(SensorLabelButton);
+            
+          /*
+         	   Sensor s;
+          	   for(int i=0;i<sensorList.size(); i++){
+                     s=sensorList.get(i);
+                     
+             JLabel Sensorname = new JLabel(s.typeOfSensor);
+             Sensorname.setBounds(s.getPositionX()+5,s.getPositionY()-50,100,100);
+             simulation.getContentPane().add(Sensorname);
+          	   }   
+          	   */
+
+
+
+            JButton SaveButton = new JButton("Save");
+            
+            SaveButton.addActionListener(new ActionListener() {
+      			@Override
+      			public void actionPerformed(ActionEvent e) {
+      				MyCanvas.sensorListsaved.addAll(sensorList);
+      				System.out.println("saved");
+      				for(int i=0;i< MyCanvas.sensorListsaved.size();i++){
+                        System.out.println (i+" "+MyCanvas.sensorListsaved.get(i).getTypeOfSensor());
+                    }
+      				System.out.println (+MyCanvas.sensorListsaved.size());
+                    
+                          }
+            });
+            
+            SaveButton.setBounds(450,470,200,30);
+             window.getContentPane().add(SaveButton);
+             
+             
+             JButton LoadButton = new JButton("Load");            
+             LoadButton.addActionListener(new ActionListener() {
+       			@Override
+       			public void actionPerformed(ActionEvent e) {
+                 
+       				for(int i=0;i< MyCanvas.sensorListsaved.size();i++){
+                        System.out.println (i+" "+MyCanvas.sensorListsaved.get(i).getTypeOfSensor());
+                    }
+       				emb.Change();
+       				sensorList.addAll(MyCanvas.sensorListsaved);
+       				
+       				canvas.resetCanvas();
+                           }
+             });
+             
+             LoadButton.setBounds(450,520,200,30);
+              window.getContentPane().add(LoadButton);
+             
+          
            
           drawSub.setBounds(50,570,80,30);
           window.getContentPane().add(drawSub);
@@ -195,7 +276,7 @@ public class EmbeddedSystem implements Runnable {
                         }
           });
           
-          drawSubB.setBounds(150,570,80,30);
+          drawSubB.setBounds(150,570,200,30);
            window.getContentPane().add(drawSubB);
            
         //GUI FOR WIDTH
@@ -530,7 +611,7 @@ public class EmbeddedSystem implements Runnable {
               emb.Change();
               canvas.resetCanvas();   
               
-              CheckSubNetworks.resetCheckNet();
+             CheckSubNetworks.resetCheckNet();
               
               /* if(disconneted.size()>0){
                for(Sensor s: disconneted){
@@ -553,7 +634,16 @@ public class EmbeddedSystem implements Runnable {
        shortestPath.addActionListener(new ActionListener(){
           @Override
             public void actionPerformed(ActionEvent e) {
+              
+        	  //emb.Change();
+              canvas.resetCanvas(); 
+              canvas.drawFailedSensors();
                             
+              for(Sensor s : sensorList){
+                  s.setForwardMsg(false);
+              }
+              
+        	  
        for(Sensor s : sensorList){
             if(s.typeOfSensor.equals("fs")){
                 s.hops = 0;
@@ -574,7 +664,7 @@ public class EmbeddedSystem implements Runnable {
                 s0 = s;
             }
         }
-                fireSpreadRouting(canvas,emb.spl); 
+                emb.fireSpreadRouting(canvas,emb.spl); 
             }
            
        });
@@ -652,31 +742,43 @@ public void net( ){
         
     }   
                
-     public static void fireSpreadRouting(MyCanvas canvas,ShortestPathList spl){
-        Timer t= new Timer();
+     public  void fireSpreadRouting(MyCanvas canvas,ShortestPathList spl){
+      
             TimerTask task = new TimerTask() {
         boolean message=true;
         @Override
         public void run() {
             
-            if(message){
+            //if(message){
           Sensor s=null; //sensorList.get(sensorList.size()-1);
-           
-           canvas.setFire();
-           
-           s=canvas.distanceFireSensor();
-          if (s!=null){
+          
+          canvas.setFire();
+          
+          System.out.print("hey");
+          s=canvas.distanceFireSensor();
+          if (s!=null) {
+        	  if (CheckSubNetworks.checkSesnorInSubNet(s)){
+        	  System.out.print("hey2");
               newSP(s, spl);
            //   ShortestPathList.printSP();
               canvas.drawThickLine(s, s_list);
+              
+              ShortestPathList.n_list.clear();
+              ShortestPathList.s_list.clear();
+                      
+              spl.findNeighbors(sensorList);
+            
+              //initDistances(sensorList);
+              
              // canvas.drawLine(s, spl.s_list);
-              message=false;
+           } else {
+        	   s.setForwardMsg(true);
            }
         }
         }
     };
               
-       t.schedule(task, 2000,900);
+    timerRouting.schedule(task, 0,200);
         
     }
       
@@ -699,8 +801,6 @@ public void net( ){
         TimerTask task = new TimerTask() {
         @Override
         public void run() {
-            boolean message=true;
-           // if(message){
           Sensor s=null; //sensorList.get(sensorList.size()-1);
             Sensor fs= sensorList.get(sensorList.size()-1);
            canvas.setFire();
@@ -709,7 +809,6 @@ public void net( ){
           if ((s!=null)){
               try {
                   
-                  message=false;
                   canvas.BCM(s, fs);
               } catch (InterruptedException ex) {
                   Logger.getLogger(EmbeddedSystem.class.getName()).log(Level.SEVERE, null, ex);
@@ -728,6 +827,7 @@ public void net( ){
    
         tFire.cancel();
         timerNET.cancel();
+        timerRouting.cancel();
         MyCanvas.failedS.clear();
         sensorList.clear();
         sensorList=MyCanvas.createSensorList2(MyCanvas.height,MyCanvas.width,MyCanvas.SensingRange,MyCanvas.CommunicationRange,MyCanvas.SensorAmount);
@@ -742,6 +842,7 @@ public void net( ){
        startSensor.setText("");
         tFire= new Timer();
          timerNET= new Timer();
+         timerRouting=new Timer();
      
      
     }
@@ -790,5 +891,34 @@ public void net( ){
         runThread = new Thread(this);
         runThread.start();
     }
+  
+  
+  public static void checkShortestPath(){
+      int i=0;
+       ArrayList<Sensor> list =new ArrayList();
+      for(subNet sub:CheckSubNetworks.subNetList){
+          if(sub.getConnectedToFS()){
+              list= sub.getSubNet();
+          }
+      }
+     
+      for(Sensor s:sensorList){
+          if(s.getForwardMsg()){
+              if(CheckSubNetworks.myContains(s,list)){
+                  i++;
+              }else{
+                  System.out.println("sensor not connected "+s.getTypeOfSensor());
+
+              }
+          }
+          
+      }
+      if(i==list.size()){
+          System.out.println("EVERYONE has been check in the sp");
+      }else{
+           System.out.println("something is wrong in the sp");
+      }
+  }
+  
  
 }

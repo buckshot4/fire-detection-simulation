@@ -56,7 +56,16 @@ public class GridSP {
         ArrayList<Sensor> neighbors = new ArrayList<>();
         neighbors = s.neighbourSensor;
         
-        for(Sensor os : neighbors){
+        // Remove all the failed sensors from list
+       ArrayList<Sensor> activeNeighborsOnlyList = new ArrayList<>();
+       for(Sensor ss : s.neighbourSensor){
+           if(ss.getState()){
+            activeNeighborsOnlyList.add(ss);
+           }
+        }
+        
+        for(Sensor os : activeNeighborsOnlyList){
+            
             if(s.hops < os.hops){
                 os.hops = s.hops + 1;
                 //System.out.println(os.typeOfSensor + " became " + os.hops);
@@ -73,8 +82,16 @@ public class GridSP {
         Sensor closestNeighbor = null;
         int bestHop = 1000;
         
+        ArrayList<Sensor> activeNeighbors = new ArrayList<>();
         for(Sensor s : sensor.neighbourSensor){
-            if(s.hops < bestHop){
+            if(s.getState()){
+                activeNeighbors.add(s);
+            }
+        }
+         
+        
+        for(Sensor s : activeNeighbors){
+            if(s.hops < bestHop && s.getState()){
                 bestHop = s.hops;
                 closestNeighbor = s;
             }
