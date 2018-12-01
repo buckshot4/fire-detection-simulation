@@ -13,11 +13,18 @@ public class ShortestPathList {
     static ArrayList<Sensor> n_list; // Neighbor list
     static ArrayList<Sensor> s_list; // List with sensors on the shortest path
     
+    static double timeToReachFS;
+    static boolean timeSet;
+    
     // constuctor
     public ShortestPathList(){
     s_list = new ArrayList<Sensor>();
     n_list = new ArrayList<Sensor>();
+    timeToReachFS = 0.0;
+    timeSet = false;
     }
+    // constuctor
+  
     
     // given a list of sensors with (x,y) we can figure out if two nodes are 
     // neighbors or not, we do this by checking the distance between those.

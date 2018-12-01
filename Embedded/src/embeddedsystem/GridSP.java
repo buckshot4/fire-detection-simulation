@@ -5,13 +5,17 @@
  */
 package embeddedsystem;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
 public class GridSP {
+    Sensor firstSensor;
     
-    
+    public GridSP(Sensor s){
+        firstSensor =s;
+    }
     
     public static void initDistances(ArrayList<Sensor> sensorList){
         
@@ -91,12 +95,15 @@ public class GridSP {
          
         
         for(Sensor s : activeNeighbors){
-            if(s.hops < bestHop && s.getState()){
+            if(s.hops < bestHop && s.getState()&& (s.getForwardMsg()!=true)){
                 bestHop = s.hops;
                 closestNeighbor = s;
+            
             }
         }
-        
+        if(closestNeighbor==null){
+            
+        }else{
         // print test
         System.out.println("The closest neightbor to " + sensor.typeOfSensor + 
                 " is " + closestNeighbor.typeOfSensor + " with " + closestNeighbor.hops + " hops");
@@ -107,15 +114,61 @@ public class GridSP {
         // Recirsion - continue with the neighbors of the closest sensor and so on
         if(!closestNeighbor.typeOfSensor.equals("fs")){
             newSP(closestNeighbor, spl);
+        }else{
+          
         }
-        
+        }
         
         
     }
     
     
    
- 
+  public  void newSPThread(Sensor sensor, ArrayList<Sensor> list){
+        
+        // make sensor true = transmitiong message
+        sensor.forwardMsg = true;
+        
+        //choose the neighbor with the closest path to the FS, with less hops.
+        Sensor closestNeighbor = null;
+        int bestHop = 1000;
+        
+        ArrayList<Sensor> activeNeighbors = new ArrayList<>();
+        for(Sensor s : sensor.neighbourSensor){
+            if(s.getState()){
+                activeNeighbors.add(s);
+            }
+        }
+         
+        
+        for(Sensor s : activeNeighbors){
+            if(s.hops < bestHop && s.getState()){
+                bestHop = s.hops;
+                closestNeighbor = s;
+            
+            }
+        }
+        if(closestNeighbor==null){
+            
+        }else{
+        // print test
+        System.out.println("The closest neightbor to " + sensor.typeOfSensor + 
+                " is " + closestNeighbor.typeOfSensor + " with " + closestNeighbor.hops + " hops");
+        
+        // add the closest neighbor to the Shortest path
+        list.add(closestNeighbor);
+        
+        // Recirsion - continue with the neighbors of the closest sensor and so on
+        if(!closestNeighbor.typeOfSensor.equals("fs")){
+            newSPThread(closestNeighbor, list);
+        }else{
+              EmbeddedSystem.ADDToDraw(new SP(firstSensor,list));
+              MyCanvas.drawThickLine(firstSensor, list);
+        }
+        }
+        
+        
+    }
     public static void printHops(ArrayList<Sensor> list){
         
         for(Sensor s : list){

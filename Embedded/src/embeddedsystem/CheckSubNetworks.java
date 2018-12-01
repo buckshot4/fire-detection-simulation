@@ -35,75 +35,7 @@ public class CheckSubNetworks {
    
    
        
-     public static void BCM(Sensor currentSensor, Sensor fs) throws InterruptedException {
-   	  if(currentSensor.getState()==true) {
-   		  	BC(currentSensor, fs ,currentSensor);   
-   		  	}  	
- }
-     
-  //broadcast firedetection.
-     public static void BC(Sensor currentSensor, Sensor fs, Sensor firestart) throws InterruptedException {
-     	Sensor neighbor;
-     	Sensor s;
-        Graphics g = surface.getGraphics();
-     
-        g.setColor(Color.GREEN);
-        
-                int numOfNeighbors1 = currentSensor.getNeighborNumber();
-               
-                    
-               
-                System.out.println(" ");
- 		System.out.println(currentSensor.typeOfSensor+" ");     
-     	
- 		//goes through all neighbors and adds them to the queue if their state is not active/false. 
-     		for(int i = 0; i < numOfNeighbors1; ++i){    
-     		neighbor = currentSensor.neighbourSensor.get(i);
-     		System.out.print(neighbor.typeOfSensor+" ");
-     		if(neighbor.getForwardMsg()==false && neighbor.getState()==true) {	
-	        //System.out.print(neighbor.typeOfSensor+" ");
-     		queueNet.add(neighbor); 
-     		}
-     		}
-     		//the state of the currentsensor is changed so it cannot be added to the queue again. 
-     		currentSensor.setForwardMsg(true);
-               
-     			try {
-     			
-   			//sleep 1 seconds
-   			Thread.sleep(200);
-   			
-   		} catch (InterruptedException e) {
-   			e.printStackTrace();
-                }
-     		
-     		
-               
-               // fillCenteredCircle((Graphics2D) g, currentSensor.x,currentSensor.y, 9);
-  		System.out.println(" ");
-                g.dispose();
-                view.repaint();
- 		//takes the first sensor in the queue and checks if it is the fs sensor. 
- 		//Otherwise it calls the BC method again with the first sensor in the queue. 
- 		while(queueNet.size() !=0) {
- 		s=queueNet.poll();
- 		//System.out.print(s.typeOfSensor+" ");
- 		if(s.typeOfSensor.equals(fs.typeOfSensor)) {
-                  MyCanvas.fillCenteredCircle((Graphics2D) g, s.x,s.y, 7);
-     			System.out.println("Reached FS");
-     			System.out.print("fire started at: ");
-     			//setJlabel(firestart.typeOfSensor);
-                       
-                       
- 		}  		
- 		if(s.getForwardMsg()==false) {
-                  
- 		BC(s,fs, firestart);
- 		
-               }
- 		}
-            
-     }
+
    
      public static void checkNetworkCuts(Sensor currentSensor,subNet sb) throws InterruptedException {
    	
@@ -312,7 +244,14 @@ public class CheckSubNetworks {
         
         
     }
-    
+    public static int getConnectedSensors(){
+        for(subNet sub:subNetList){
+            if(sub.getConnectedToFS()){
+                return sub.getSubNet().size()-1;
+            }
+        }
+        return 0;
+    }
     public static boolean myContains(Sensor s, ArrayList<Sensor> list){
         for(Sensor sen:list){
             if(sen.getTypeOfSensor().equalsIgnoreCase(s.getTypeOfSensor())&&sen.getState()){

@@ -37,8 +37,9 @@ public class MyCanvas {
     static ArrayList<Sensor> SentSensors = new ArrayList();
     private Fire fire;
     static LinkedList<Sensor> queue = new LinkedList<Sensor>(); 
+    static LinkedList<Sensor> FireDetectedqueue = new LinkedList<Sensor>(); 
     static ArrayList<Sensor> disconneted;
-   
+    
      static boolean fireStop = false;
     
       //sensor layout and info
@@ -47,7 +48,7 @@ public class MyCanvas {
        static int SensorAmount = 121;
        static int SensingRange = 50;
        static int CommunicationRange = 120;
-       static int mode = 0;
+       static int mode = 1;
        
     
     public MyCanvas(){
@@ -397,15 +398,62 @@ public class MyCanvas {
                     tempSensor.setState(true);                        
                     sensorList.add(tempSensor); 
                 }
+                
+                
+                
+             
+                int sectionX = 8;
+                int sectionY = 8;
+                
+                int sections = sectionY*sectionX;
+                
+                int widthX = width/sectionX-10;
+                int heightY = height/sectionY-10;          
+                
+                int w = 0;
+                int h = 0;
+                
+                if(mode==4) { 
+                	
+                	while (name < numOfSensors-1) {
+                    for(w = 0; w < width-widthX; w=w+widthX){
+                    	
+
+                        for(h = 0; h < height-heightY; h=h+heightY){
+                        	if (name < numOfSensors-1) {
+                        	preX = w +(random.nextInt(widthX));
+                        	preY = h + (random.nextInt(heightY));
+
+                    	int n = random.nextInt(comR/5);
+                    	   
+                            tempSensor = new Sensor(preX, preY, "s" + Integer.toString(name), senR, comR+n); 
+ 
+                            tempSensor.setState(true);                        
+                            sensorList.add(tempSensor);                         
+                            name ++;
+                        	}
+                    }
+                    }
+                    w = 0;
+                    h = 0;
+                	}
+                    tempSensor = new Sensor(width-comR/3, height-comR/3, "fs", senR, comR+comR/5);  
+                    tempSensor.setState(true);                        
+                    sensorList.add(tempSensor); 
+                }
                    
  
                 return sensorList;
             }
          
-      public void drawThickLine(Sensor s,ArrayList<Sensor> l){
+      public static void drawThickLine(Sensor s,ArrayList<Sensor> l){
             Graphics g = surface.getGraphics();
             int thickness=5;
           g.setColor(Color.BLUE);
+       //   int x1,x2,y1,y2,dX,dY;
+         // double lineLength,scale,ddy,ddx,dx,dy;
+           //  int xPoints[] = new int[4];
+             //        int yPoints[] = new int[4];
                 int x1=(s.getPositionX());
                   int x2=  (l.get(0).getPositionX()); 
                   int y2=(l.get(0).getPositionY());
@@ -501,14 +549,16 @@ public class MyCanvas {
          view.repaint();
       }
       
-    public void drawLine(Sensor s,ArrayList<Sensor> l){
+    public static void drawLine(Sensor s,ArrayList<Sensor> l){
          
          Graphics g = surface.getGraphics();
        
-          g.setColor(Color.BLUE);
+          g.setColor(Color.GREEN);
         
-          g.drawLine(s.x,s.y,l.get(0).getPositionX(),l.get(0).getPositionY());
+         // g.drawLine(s.x,s.y,l.get(0).getPositionX(),l.get(0).getPositionY());
+           //     System.out.println("DRAW FIRST LINE"+ s.getTypeOfSensor()+"  "+l.get(0).getTypeOfSensor());
           for(int i=0;i<l.size()-1;i++){
+              System.out.println("DRAWLINE"+ l.get(i).getTypeOfSensor()+"  "+l.get(i+1).getTypeOfSensor());
            g.drawLine(l.get(i).getPositionX(), l.get(i).getPositionY(), l.get(i+1).getPositionX(), l.get(i+1).getPositionY());
           }
         g.dispose();
@@ -553,14 +603,13 @@ public class MyCanvas {
                 s=sensorList.get(i);
                 if(s.getTypeOfSensor().equalsIgnoreCase("fs")){
                      g.setColor(Color.BLACK);
-                 
+                      s.setSenRange(s.senR-2);
                     
                     drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.senR);
-                 
+                   // drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.comR);
                     drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.senR);
-                       g.setColor(Color.green);
-                     drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.comR+1);
-                       drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.comR);
+                       g.setColor(Color.RED);
+                     drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.comR);
                      s=sensorList.get(i);
                      g.setColor(Color.BLUE);
                       fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 7);
@@ -588,7 +637,7 @@ public class MyCanvas {
     	if(s.getState()==false) {
        	 g.setColor(Color.BLACK);
             drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), s.senR);
-            g.setColor(Color.BLUE);
+             g.setColor(Color.RED);
             drawCenteredCircle ( (Graphics2D)g,s.getPositionX(),s.getPositionY(), s.comR);
             g.setColor(Color.RED);
             fillCenteredCircle((Graphics2D) g,s.getPositionX(),s.getPositionY(), 8);
@@ -636,13 +685,16 @@ public class MyCanvas {
          //if(!CheckSubNetworks.myContains(otherSensor, SentSensors)) {
          //if(!SentSensors.contains(otherSensor)) {
          if(fireDetected>(distance+10) && otherSensor.getForwardMsg()==false && otherSensor.getState()==true){
-             s= otherSensor;
+        	 s= otherSensor;
+        	 if(!SentSensors.contains(s)) {
+        	 SentSensors.add(s);
+        	 FireDetectedqueue.add(s);
+        	 }
              //return s;
          }
          }
         // }
-         SentSensors.add(s);
-         return s;
+         return FireDetectedqueue.poll();
       }
       
       
