@@ -689,6 +689,7 @@ public class EmbeddedSystem implements Runnable {
                       "Number of sensors connected to FS: "+CheckSubNetworks.getConnectedSensors() + "\n"+ "number of subNet" + CheckSubNetworks.subNetList.size());
                 }
                 CheckSubNetworks.printSubNets();
+                Sensor s=sensorList.get(10);
     
 					WriteExcel.PrintConnectedNetwork(CheckSubNetworks.getConnectedSensors(),CheckSubNetworks.subNetList);
 	       
