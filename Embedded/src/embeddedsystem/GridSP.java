@@ -92,6 +92,7 @@ public class GridSP {
                 activeNeighbors.add(s);
             }
         }
+        System.out.println("ACTIVE "+activeNeighbors.size());
          
         
         for(Sensor s : activeNeighbors){
@@ -139,7 +140,7 @@ public class GridSP {
                 activeNeighbors.add(s);
             }
         }
-         
+         System.out.println("ACTIVE "+activeNeighbors.size());
         
         for(Sensor s : activeNeighbors){
             if(s.hops < bestHop && s.getState()){
