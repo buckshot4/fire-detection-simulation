@@ -86,7 +86,7 @@ public class WriteExcel {
 	}
 	
 	//save to excel file
-	FileOutputStream out = new FileOutputStream(new File("C:\\Users\\Super\\Desktop\\almostdickpics\\listProducts.xls"));
+	FileOutputStream out = new FileOutputStream(new File("listProducts.xls"));
 	workbook.write(out);
 	out.close();
 	workbook.close();
@@ -158,7 +158,7 @@ System.out.println(e.getMessage());
 		}
 		
 		//save to excel file
-		FileOutputStream out = new FileOutputStream(new File("C:\\Users\\Super\\Desktop\\almostdickpics\\Subnets.xls"));
+		FileOutputStream out = new FileOutputStream(new File("Subnets.xls"));
 		workbook.write(out);
 		out.close();
 		workbook.close();
@@ -241,7 +241,7 @@ public static void PrintConnectedNetwork2(ArrayList<Integer> AmountOfSensors, Ar
 		}
 		
 		//save to excel file
-		FileOutputStream out = new FileOutputStream(new File("C:\\Users\\Super\\Desktop\\almostdickpics\\Subnets.xls"));
+		FileOutputStream out = new FileOutputStream(new File("Subnets.xls"));
 		workbook.write(out);
 		out.close();
 		workbook.close();
@@ -319,7 +319,7 @@ public static void PrintCoverage(ArrayList<Integer> AmountOfSensors, ArrayList<I
 	}
 	
 	//save to excel file
-	FileOutputStream out = new FileOutputStream(new File("/Users/eleonora/Desktop/DTU/Embedded/gitHub/fire-detection-simulation/Subnets.xls"));
+	FileOutputStream out = new FileOutputStream(new File("Subnets.xls"));
 	workbook.write(out);
 	out.close();
 	workbook.close();
