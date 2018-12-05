@@ -5,6 +5,9 @@
  */
 package embeddedsystem;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
  *
  * @author eleonora
@@ -16,14 +19,30 @@ public class Fire {
     private int positionY;
     private int range;
     
+    static  ArrayList<Fire> FireList =new ArrayList();
+    
 
  public Fire(int x,int y,int range){
      positionX=x;
      positionY=y;
-     this.range=range;
-  
-     
+     this.range=range;   
  }   
+ 
+ public static ArrayList<Fire> createFireList(){
+
+     ArrayList FireList = new ArrayList<> ();
+     Fire tempFire = null;
+     Random random= new Random();
+     int Xstep = MyCanvas.height/19;
+     int Ystep = MyCanvas.width/19;
+     for(int i = 0; i < 20; i++) {
+    	 for(int j = 0; j < 20; j++) {
+    		 tempFire = new Fire(i*Xstep, j*Ystep, 8);
+    		 FireList.add(tempFire);
+    	 }  
+     }
+	return FireList;     
+ }
     
 public void setIntensity(int intensity){
     this.intensity=intensity;

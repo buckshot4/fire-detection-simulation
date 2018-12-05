@@ -35,11 +35,12 @@ public class MyCanvas {
     static  ArrayList<Sensor> sensorListsaved =new ArrayList();
     static ArrayList<Sensor> failedS= new ArrayList();
     static ArrayList<Sensor> SentSensors = new ArrayList();
+       private static Fire firegrid;
     private Fire fire;
     static LinkedList<Sensor> queue = new LinkedList<Sensor>(); 
     static LinkedList<Sensor> FireDetectedqueue = new LinkedList<Sensor>(); 
     static ArrayList<Sensor> disconneted;
-    
+    static LinkedList<Fire> FireDetectedqueue2 = new LinkedList<Fire>(); 
      static boolean fireStop = false;
     
       //sensor layout and info
@@ -441,6 +442,25 @@ public class MyCanvas {
                     tempSensor.setState(true);                        
                     sensorList.add(tempSensor); 
                 }
+             
+       /*         if(mode==5){
+                    for(int x = step; x < width; x = x + step){
+                    for(int y = step; y < height; y = y +step){
+                    	int n = random.nextInt(comR/5);
+                        if((x == width-step) && (y == height-step) ){
+                            tempSensor = new Sensor(x+100, y+100, "fs", senR, comR+n);                  
+                        }
+                        else{
+                            tempSensor = new Sensor(x+100, y+100, "s" + Integer.toString(name), senR, comR+n);
+                        }
+                        tempSensor.setState(true);
+                        
+                        sensorList.add(tempSensor);
+                        name ++;
+                    }
+                }
+                */
+                
                    
  
                 return sensorList;
@@ -592,7 +612,28 @@ public class MyCanvas {
         
      }
      
-    
+    public void changeSensorList(int number){
+          sensorList.clear();
+              Graphics g = surface.getGraphics();
+         Sensor s;
+         g.setColor(Color.WHITE);
+        g.fillRect(0,0,800,700);
+        mode=0;
+        sensorList= MyCanvas.createSensorList2(MyCanvas.width,MyCanvas.height,MyCanvas.SensingRange,MyCanvas.CommunicationRange,MyCanvas.SensorAmount);
+           
+        if(sensorList.size()>121){
+            System.out.println("error");
+        }
+         for(int i=0;i<121;i++){
+            if( FileInport.values[number][i]==0){
+                sensorList.get(i).setState(false);
+                
+            }
+             
+         }
+         drawSensor();
+         
+    }
 
     
      public void drawSensor(){
@@ -697,7 +738,50 @@ public class MyCanvas {
          return FireDetectedqueue.poll();
       }
       
-      
+        
+     public int distanceFireSensor2(){
+    	 FireDetectedqueue2.clear();
+    	 int count = 0;
+    	 System.out.println("started");
+    	 ArrayList<Fire> FireList = Fire.createFireList();
+      for(int j = 0; j < FireList.size(); j++) {  
+         fire = FireList.get(j);
+         double d1X = fire.getPositionX();
+         double d1Y = fire.getPositonY();
+         Sensor otherSensor;
+         for(int i=0;i<sensorList.size();i++){
+           boolean inside = false;
+           otherSensor=sensorList.get(i);
+    	    if (CheckSubNetworks.checkSesnorInSubNet(otherSensor)){
+     		    for(int n = 0; n < otherSensor.neighbourSensor.size(); n++) {
+     		    if(CheckSubNetworks.checkSesnorInSubNet(otherSensor.neighbourSensor.get(n))) {
+      			   n = otherSensor.neighbourSensor.size();
+      			   inside = true;
+      			 //System.out.println("sensor inside " + otherSensor.typeOfSensor);
+      		    }  			  
+      		    }
+      	   	    }
+         double d2X = otherSensor.x;
+         double d2Y = otherSensor.y;
+         int fireRange=fire.getRange();
+        int fireDetected=(int)((fireRange/2)+(otherSensor.senR/2));
+         
+         double distance = Math.sqrt(Math.pow(d1X-d2X,2) + Math.pow(d1Y-d2Y,2));
+
+         DecimalFormat df = new DecimalFormat("#.###");
+         df.setRoundingMode(RoundingMode.CEILING);
+
+         if(fireDetected>(distance) && otherSensor.getState()==true && inside == true){
+        	 System.out.println("sensor detected fire" + otherSensor.typeOfSensor);
+        	 if(!FireDetectedqueue2.contains(fire)) {
+        	 System.out.println("sensor added" + otherSensor.typeOfSensor);
+        	 FireDetectedqueue2.add(fire);
+        	}
+         }
+         }
+         }
+         return FireDetectedqueue2.size();
+         }
      public void setFire(){
           
           Graphics g = surface.getGraphics();
@@ -717,6 +801,19 @@ public class MyCanvas {
             g.dispose();
             view.repaint();
      }
+     
+      public void setFire2(){
+    	 ArrayList<Fire> FireList = Fire.createFireList();
+         for(int j = 0; j < FireList.size(); j++) {      
+         fire = FireList.get(j);
+         Graphics g = surface.getGraphics();
+        Color c=new Color(1f,0f,0f,.4f );
+        g.setColor(c);
+       drawCenteredCircle((Graphics2D) g,fire.getPositionX(),fire.getPositonY(),fire.getRange());
+         g.dispose();
+         view.repaint();
+         }
+    }
         public static void randomFail(int howMany){
         
         
