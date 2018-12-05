@@ -129,7 +129,7 @@ public class EmbeddedSystem implements Runnable {
             2 = SEMI RANDOM (ALWAYS IN RANGE OF EACHOTHER) 
             3 = SEMI RANDOM GRID
             */
-            String[] modes = new String[] {"Grid", "Completley Random", "Semi-Random", "Semi-Random Grid", "Semi-Random-Sections"};
+            String[] modes = new String[] {"Grid", "Completley Random", "Semi-Random", "Semi-Random Grid", "Semi-Random-Sections","optimal"};
  
             JComboBox<String> comboModes = new JComboBox<>(modes);
             FileInport.InportFile();

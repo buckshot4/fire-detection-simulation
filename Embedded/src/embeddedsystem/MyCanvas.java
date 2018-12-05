@@ -49,7 +49,7 @@ public class MyCanvas {
        static int SensorAmount = 121;
        static int SensingRange = 50;
        static int CommunicationRange = 120;
-       static int mode = 1;
+       static int mode = 5;
        
     
     public MyCanvas(){
@@ -285,7 +285,7 @@ public class MyCanvas {
          
                   public static ArrayList<Sensor> createSensorList2(int width, int height, int senR, int comR, int numOfSensors){
 
-                ArrayList sensorList = new ArrayList<> ();
+               // ArrayList sensorList = new ArrayList<> ();
                 Sensor tempSensor = null;
                 Sensor tempSens2 = null;
                 Random random = new Random();
@@ -296,14 +296,14 @@ public class MyCanvas {
                 
                 //grid system
                 if(mode==0)
-                for(int w = step; w < width; w = w + step){
-                    for(int h = step; h < height; h = h +step){
+                for(int w = 0; w < width; w = w + step){
+                    for(int h = 0; h < height; h = h +step){
                     	int n = random.nextInt(comR/5);
                         if((w == width-step) && (h == height-step) ){
-                            tempSensor = new Sensor(w+100, h+100, "fs", senR, comR+n);                  
+                            tempSensor = new Sensor(w, h, "fs", senR, comR+n);                  
                         }
                         else{
-                            tempSensor = new Sensor(w+100, h+100, "s" + Integer.toString(name), senR, comR+n);
+                            tempSensor = new Sensor(w, h, "s" + Integer.toString(name), senR, comR+n);
                         }
                         tempSensor.setState(true);
                         
@@ -443,23 +443,34 @@ public class MyCanvas {
                     sensorList.add(tempSensor); 
                 }
              
-       /*         if(mode==5){
-                    for(int x = step; x < width; x = x + step){
-                    for(int y = step; y < height; y = y +step){
+                 if(mode==5){
+                    for(int x = 35; x < width-15; x = x + step){
+                    for(int y = 35; y < height-15; y = y +step){
                     	int n = random.nextInt(comR/5);
                         if((x == width-step) && (y == height-step) ){
-                            tempSensor = new Sensor(x+100, y+100, "fs", senR, comR+n);                  
+                            tempSensor = new Sensor(x, y, "fs", senR, comR+n);                  
                         }
                         else{
-                            tempSensor = new Sensor(x+100, y+100, "s" + Integer.toString(name), senR, comR+n);
+                            tempSensor = new Sensor(x, y, "s" + Integer.toString(name), senR, comR+n);
                         }
                         tempSensor.setState(true);
                         
                         sensorList.add(tempSensor);
                         name ++;
                     }
+                     if(sensorList.size()>121){
+                        System.out.println("error");
+                         }
+                    for(int i=0;i<sensorList.size();i++){
+                      if( FileInport.values[4][i]==0){
+                          sensorList.get(i).setState(false);
+                      }
+           
+                     }
+                    
                 }
-                */
+                 }
+                
                 
                    
  
