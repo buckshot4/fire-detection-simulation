@@ -280,6 +280,7 @@ public class EmbeddedSystem implements Runnable {
       					MyCanvas.SensorAmount = j;    					
   	
       				for(int i = 0; i < 30; i++) {
+                                    int check =0;
                         CheckSubNetworks.resetCheckNet();
       				    emb.Change();
        					emb.net();
@@ -293,6 +294,10 @@ public class EmbeddedSystem implements Runnable {
       			   		} catch (InterruptedException n) {
       			   			n.printStackTrace();
       			                }
+                                        check=emb.fireSpread2(canvas);
+                                        if(check>0){
+                                            
+                                      
       					
       				    Coverage.add(emb.fireSpread2(canvas));
       					FailedSensors.add(0);
@@ -300,7 +305,10 @@ public class EmbeddedSystem implements Runnable {
       					subnets.add(CheckSubNetworks.subNetList.size());
       					disconnected.add(MyCanvas.sensorList.size()-CheckSubNetworks.getConnectedSensors()-1);
       					Connected.add(CheckSubNetworks.getConnectedSensors()+1);     	      					
-      				}
+      				}else{
+                                            i--;
+                                        } 
+                                }
       				}
                     
                    WriteExcel.PrintConnectedNetwork2(TotalSensors, FailedSensors,Connected, disconnected, subnets, Coverage);       
@@ -337,6 +345,7 @@ public class EmbeddedSystem implements Runnable {
       				for(int j = failedSensors; j < Limit; j=j+steps) {
   	
       				for(int i = 0; i < 30; i++) {
+                                     int check =0;
                         CheckSubNetworks.resetCheckNet();
       				    emb.Change();
                         canvas.resetCanvas();                          			
@@ -351,14 +360,20 @@ public class EmbeddedSystem implements Runnable {
       			   		} catch (InterruptedException n) {
       			   			n.printStackTrace();
       			                }
-      					Coverage.add(emb.fireSpread2(canvas));        
+                                        check=emb.fireSpread2(canvas);
+                                      if(check>0){
+      					Coverage.add(emb.fireSpread2(canvas));
+                                        
       					FailedSensors.add(j);
       					TotalSensors.add(MyCanvas.sensorList.size());
       					subnets.add(CheckSubNetworks.subNetList.size());
       					disconnected.add(MyCanvas.sensorList.size()-CheckSubNetworks.getConnectedSensors()-1);
       					Connected.add(CheckSubNetworks.getConnectedSensors()+1);     	
       					
-      				}
+                                      }else{
+                                          i--;
+                                      }
+                                }
       				}
                     
                    WriteExcel.PrintConnectedNetwork2(TotalSensors, FailedSensors ,Connected, disconnected, subnets, Coverage);       
@@ -740,11 +755,15 @@ public class EmbeddedSystem implements Runnable {
           @Override
             public void actionPerformed(ActionEvent e) {
                
-            printToDraw();
-                 //canvas.weatherChange(13);
+          //  printToDraw();
+               
+             CheckSubNetworks.resetCheckNet();
+             
+                 canvas.weatherChange(10);
+                  emb.spl.findNeighbors(sensorList);    
+                  initDistances(sensorList);
                  
-                 //emb.canvas.setFire();
-                
+                 
             }
            
        });

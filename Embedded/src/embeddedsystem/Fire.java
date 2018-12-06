@@ -35,8 +35,8 @@ public class Fire {
      Random random= new Random();
      int Xstep = MyCanvas.height/19;
      int Ystep = MyCanvas.width/19;
-     for(int i = 0; i < 20; i++) {
-    	 for(int j = 0; j < 20; j++) {
+     for(int i = 0; i < 17; i++) {
+    	 for(int j = 0; j < 17; j++) {
     		 tempFire = new Fire(i*Xstep, j*Ystep, 8);
     		 FireList.add(tempFire);
     	 }  

@@ -295,11 +295,11 @@ public class MyCanvas {
                 int name = 0;
                 
                 //grid system
-                if(mode==0)
-                for(int w = 0; w < width; w = w + step){
-                    for(int h = 0; h < height; h = h +step){
+               if(mode==0)
+                for(int w = 0; w < width-50; w = w + step){
+                    for(int h = 0; h < height-50; h = h +step){
                     	int n = random.nextInt(comR/5);
-                        if((w == width-step) && (h == height-step) ){
+                        if((w == width-step-50) && (h == height-step-50) ){
                             tempSensor = new Sensor(w, h, "fs", senR, comR+n);                  
                         }
                         else{
@@ -313,11 +313,11 @@ public class MyCanvas {
                 }
                 
                 //total random
-                if(mode==1) {
+       if(mode==1) {
                     
                     for(int i = 0; i < numOfSensors-3; ++i){
-                    	int w = random.nextInt(width);
-                    	int h = random.nextInt(height);
+                    	int w = random.nextInt(width-step-50);
+                    	int h = random.nextInt(height-step-50);
                         	int n = random.nextInt(comR/5);
                             tempSensor = new Sensor(w, h, "s" + Integer.toString(name), senR, comR+n);
                             tempSensor.setState(true);                        
@@ -325,21 +325,20 @@ public class MyCanvas {
                             name ++;
                         }
                     
-                    tempSensor = new Sensor(width-senR*2, height-senR*2, "s"  + Integer.toString(name), senR, comR+comR/5);  
+                    tempSensor = new Sensor(width-senR*2-step-50, height-senR*2-step-50, "s"  + Integer.toString(name), senR, comR+comR/5);  
                     tempSensor.setState(true);                        
                     sensorList.add(tempSensor); 
                     name ++;
                     
-                    tempSensor = new Sensor(width-senR, height-senR, "s"  + Integer.toString(name), senR, comR+comR/5);  
+                    tempSensor = new Sensor(width-senR-step-50, height-senR-step-50, "s"  + Integer.toString(name), senR, comR+comR/5);  
                     tempSensor.setState(true);                        
                     sensorList.add(tempSensor); 
                     name ++;
                     
-                    tempSensor = new Sensor(width, height, "fs", senR, comR+comR/5);  
+                    tempSensor = new Sensor(width-step-50, height-step-50, "fs", senR, comR+comR/5);  
                     tempSensor.setState(true);                        
                     sensorList.add(tempSensor); 
-                }           
-                
+                }
                 
                 int midX = width/2;
                 int midY = height/2;
@@ -414,14 +413,13 @@ public class MyCanvas {
                 int w = 0;
                 int h = 0;
                 
-                if(mode==4) { 
+           if(mode==4) { 
                 	
-                	while (name < numOfSensors-1) {
-                    for(w = 0; w < width-widthX; w=w+widthX){
-                    	
+                	while (name < numOfSensors-3) {
+                    for(w = 0; w < width-widthX-50; w=w+widthX){                   	
 
-                        for(h = 0; h < height-heightY; h=h+heightY){
-                        	if (name < numOfSensors-1) {
+                        for(h = 0; h < height-heightY-50; h=h+heightY){
+                        	if (name < numOfSensors-3) {
                         	preX = w +(random.nextInt(widthX));
                         	preY = h + (random.nextInt(heightY));
 
@@ -438,16 +436,28 @@ public class MyCanvas {
                     w = 0;
                     h = 0;
                 	}
-                    tempSensor = new Sensor(width-comR/3, height-comR/3, "fs", senR, comR+comR/5);  
+                	
+                    tempSensor = new Sensor(width-senR*2-step-50, height-senR*2-step-50, "s"  + Integer.toString(name), senR, comR+comR/5);  
+                    tempSensor.setState(true);                        
+                    sensorList.add(tempSensor); 
+                    name ++;
+                    
+                    tempSensor = new Sensor(width-senR-step-50, height-senR-step-50, "s"  + Integer.toString(name), senR, comR+comR/5);  
+                    tempSensor.setState(true);                        
+                    sensorList.add(tempSensor); 
+                    name ++;
+                    
+                    tempSensor = new Sensor(width-step-50, height-step-50, "fs", senR, comR+comR/5);  
                     tempSensor.setState(true);                        
                     sensorList.add(tempSensor); 
                 }
              
                  if(mode==5){
-                    for(int x = 35; x < width-15; x = x + step){
-                    for(int y = 35; y < height-15; y = y +step){
+    
+                for(int x = 0; x < width-step; x = x + step){
+                    for(int y = 0; y < height-step; y = y +step){
                     	int n = random.nextInt(comR/5);
-                        if((x == width-step) && (y == height-step) ){
+                        if((x == width-(step*2)) && (y == height-(step*2)) ){
                             tempSensor = new Sensor(x, y, "fs", senR, comR+n);                  
                         }
                         else{
@@ -458,7 +468,9 @@ public class MyCanvas {
                         sensorList.add(tempSensor);
                         name ++;
                     }
+                }
                      if(sensorList.size()>121){
+                         System.out.print(sensorList.size());
                         System.out.println("error");
                          }
                     for(int i=0;i<sensorList.size();i++){
@@ -468,7 +480,7 @@ public class MyCanvas {
            
                      }
                     
-                }
+                
                  }
                 
                 
@@ -601,7 +613,9 @@ public class MyCanvas {
          Sensor s;
          g.setColor(Color.WHITE);
         g.fillRect(0,0,800,700);
-        
+              ShortestPathList.n_list.clear();
+            ShortestPathList.s_list.clear();
+                    
          for(int i=0;i<sensorList.size(); i++){
          s=sensorList.get(i);
          s.setComRange(s.comR-power);
