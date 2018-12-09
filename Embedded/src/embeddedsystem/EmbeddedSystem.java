@@ -81,7 +81,7 @@ public class EmbeddedSystem implements Runnable {
  
     public static void main(String[] args) {
             
-    	 //for Excel
+    	 //ArrayList for printing data onto Excel
     	 ArrayList<Integer> TotalSensors = new ArrayList(); 
     	 ArrayList<Integer> Connected = new ArrayList(); 
     	 ArrayList<Integer> subnets = new ArrayList(); 
@@ -94,8 +94,8 @@ public class EmbeddedSystem implements Runnable {
           
             JPanel panel =new JPanel();
             JLabel l= new JLabel();
-            JTextField failSensorText = new JTextField(10);
-           
+            
+            JTextField failSensorText = new JTextField(10);           
             JTextField ComR = new JTextField(20);
             JTextField SenR = new JTextField(20);
             JTextField Sensors = new JTextField(20);
@@ -106,12 +106,12 @@ public class EmbeddedSystem implements Runnable {
             JTextField drawSub= new JTextField(20);
             JTextField optimalSol = new  JTextField (20);
             
-               //Options for Excel 2 
+            //Options for Excel SensorAmount
             JTextField SensorAmount = new JTextField(20);
             JTextField SensorStep = new JTextField(20);
             JTextField SensorLimit = new JTextField(20);
               
-            //Options for Excel
+            //Options for Excel Failed Amount
             JTextField Failsensors = new JTextField(20);
             JTextField FailSteps = new JTextField(20);
             JTextField UpperLimit = new JTextField(20);
@@ -123,6 +123,8 @@ public class EmbeddedSystem implements Runnable {
             1 = COMPLETELY RANDOM 
             2 = SEMI RANDOM (ALWAYS IN RANGE OF EACHOTHER) 
             3 = SEMI RANDOM GRID
+            4 = SEMI RANDOM SECTION
+            5 = OPTIMAL
             */
             String[] modes = new String[] {"Grid", "Completley Random", "Semi-Random", "Semi-Random Grid", "Semi-Random-Sections","optimal"};
  
@@ -130,7 +132,8 @@ public class EmbeddedSystem implements Runnable {
             FileInport.InportFile();
             MyCanvas canvas = new MyCanvas();        
           
-
+            // Creates a Sensorlist based on the variables initialized in the MyCanvas Class.
+            // These can be changed manually in the Control Window. 
             sensorList=MyCanvas.createSensorList2(MyCanvas.width,MyCanvas.height,MyCanvas.SensingRange,MyCanvas.CommunicationRange,MyCanvas.SensorAmount);
            
             System.out.println("SensorList size"+sensorList.size());
@@ -139,8 +142,7 @@ public class EmbeddedSystem implements Runnable {
              window.setTitle("Control");
              window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
               
-         
-        
+             
              window.setContentPane(op.viewWindow);
              window.setLocationByPlatform(true);
              window.setVisible(true);
@@ -160,6 +162,7 @@ public class EmbeddedSystem implements Runnable {
              
 
 ////////////////////////////////////////////////
+                //Button for printing all sensor information to an Excel File
              JButton PrintExcelB = new JButton("Print Excel");
              
              PrintExcelB.addActionListener(new ActionListener() {
@@ -180,8 +183,6 @@ public class EmbeddedSystem implements Runnable {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				emb.timerRouting.cancel();
-				System.out.println("THIS IS IT");
-				System.out.println(MyCanvas.fireStop);
 			    if(MyCanvas.fireStop == false)
 				MyCanvas.fireStop  = true;	
 			    else 
@@ -246,11 +247,11 @@ public class EmbeddedSystem implements Runnable {
            
            SensorLabelButton.setBounds(500,420,200,30);
             window.getContentPane().add(SensorLabelButton);
-////////////////////////////////////////////////    Button to add sensors until an upper limit checking for each intervall the connettivity and the 
+////////////////////////////////////////////////    Button to add sensors until an upper limit checking for each interval the connectivity and the 
 ////////////////////////////////////////////////    and the coverage of the network, saving everything in an excel file
       
     
-             SensorAmount.setBounds(100,570,50,30);
+            SensorAmount.setBounds(100,570,50,30);
             SensorStep.setBounds(150,570,50,30);
             SensorLimit.setBounds(200,570,50,30);
             
@@ -315,7 +316,7 @@ public class EmbeddedSystem implements Runnable {
             
             SubnetExcel2.setBounds(250,570,250,30);
             window.getContentPane().add(SubnetExcel2);
-////////////////////////////////////////////////    Button that allowes you to fail sensors up to a limit defining the gap between each iteration  
+////////////////////////////////////////////////    Button that allows you to fail sensors up to a limit defining the gap between each iteration  
   ////////////////////////////////////////////////    It checks the connectivity of the network and the coverage each time saving everything in an excel file                         
             Failsensors.setBounds(100,540,50,30);
             FailSteps.setBounds(150,540,50,30);
@@ -384,13 +385,14 @@ public class EmbeddedSystem implements Runnable {
             
             
     ////////////////////////////////////////////////
-  ////////////////////////////////////////////////                               
+  //////////////////////////////////////////////// Button to save the Deployment layout of the currently display network.                               
 
             JButton SaveButton = new JButton("Save");
             
             SaveButton.addActionListener(new ActionListener() {
       			@Override
       			public void actionPerformed(ActionEvent e) {
+      				MyCanvas.sensorListsaved.clear();
       				MyCanvas.sensorListsaved.addAll(sensorList);
       				System.out.println("saved");
       				for(int i=0;i< MyCanvas.sensorListsaved.size();i++){
@@ -404,6 +406,8 @@ public class EmbeddedSystem implements Runnable {
             SaveButton.setBounds(500,470,200,30);
              window.getContentPane().add(SaveButton);
              
+     ////////////////////////////////////////////////
+   //////////////////////////////////////////////// Load Button to Load the saved deployment layout. 
              
              JButton LoadButton = new JButton("Load");            
              LoadButton.addActionListener(new ActionListener() {
@@ -530,7 +534,7 @@ public class EmbeddedSystem implements Runnable {
  ////////////////////////////////////////////////  
  // it allows you to change the deployment mode
                
-          //GUI FOR MODE (0 = GRID, 1 = COMPLETELY RANDOM, 2 = SEMI RANDOM (ALWAYS IN RANGE OF EACHOTHER), 3 = SEMI RANDOM GRID)
+          //GUI FOR MODE (0 = GRID, 1 = COMPLETELY RANDOM, 2 = SEMI RANDOM (ALWAYS IN RANGE OF EACHOTHER), 3 = SEMI RANDOM GRID, 4 = SEMI RANDOM SECTION, 5 = OPTIMAL GRID)
           comboModes.setBounds(20,370,120,30);
           window.getContentPane().add(comboModes);
           comboModes.setSelectedIndex(0);
@@ -622,8 +626,7 @@ public class EmbeddedSystem implements Runnable {
           window.getContentPane().add(SensorsButton);
  ////////////////////////////////////////////////  
  // it allows you to change the sensing range of every sensor in the network
-        
-       
+               
           SenR.setBounds(400,310,80,30);
           window.getContentPane().add(SenR);
           JButton SenRButton = new JButton("Sensing Range");
@@ -658,10 +661,10 @@ public class EmbeddedSystem implements Runnable {
           
           SenRButton.setBounds(500,310,200,30);
           window.getContentPane().add(SenRButton);
+          
          ////////////////////////////////////////////////  
- // it allows you to change the comunication range of every sensor in the network  
-          
-          
+ // it allows you to change the communication range of every sensor in the network  
+                   
           ComR.setBounds(400,340,80,30);
           window.getContentPane().add(ComR);
           JButton ComRButton = new JButton("Communication Range");
@@ -709,10 +712,10 @@ public class EmbeddedSystem implements Runnable {
       
       });
        
-     setFire2.setBounds(700,240,200,30);  
+     setFire2.setBounds(500,180,200,30);  
      emb.window.getContentPane().add(setFire2);
  ////////////////////////////////////////////////  
- //it changes the communication range due to the effect of the weaather.
+ //it changes the communication range due to the effect of the weather.
  
        JButton weather = new JButton("Weather");
        weather.addActionListener(new ActionListener(){
@@ -734,7 +737,7 @@ public class EmbeddedSystem implements Runnable {
        weather.setBounds(150,210,200,30);
       window.getContentPane().add(weather);
  /////////////////////////////////////////////////////////////
-   // It randomly fails the amount of sensors that you put as input. 
+   // It randomly fails the amount of sensors that you input in the textfield. 
         
         
         failSensorText.setBounds(50,240,80,30);
@@ -814,7 +817,7 @@ public class EmbeddedSystem implements Runnable {
        
        
 /////////////////////////////////////////////////////////////      
-//it starts a random fire
+//it starts a fire at a random location
        
        JButton setFire = new JButton("Random Fire");
        setFire.addActionListener(new ActionListener(){
@@ -833,7 +836,7 @@ public class EmbeddedSystem implements Runnable {
        emb.window.getContentPane().add(setFire);
         
 /////////////////////////////////////////////////////////////
- // It restart the canvas and the information about the senors in order to perform different options without having to ran the simulator again      
+ // It restart the canvas and the information about the sensors in order to perform different options without having to ran the simulator again      
          JButton restart = new JButton("Restart");
         restart.addActionListener(new ActionListener(){
           @Override
@@ -908,7 +911,7 @@ public class EmbeddedSystem implements Runnable {
        
   
        /////////////////////////////////////////////////////////////
-        //end grphics stuff
+        //end graphics stuff
                    
                   emb.spl.findNeighbors(sensorList);    
                   initDistances(sensorList);
@@ -953,7 +956,6 @@ public void net( ){
                
         @Override
         public void run() {
-                  // if(MyCanvas.checkFireStation()){ 
        
                        try {
                            System.out.println("checking net");
@@ -963,12 +965,6 @@ public void net( ){
                            Logger.getLogger(EmbeddedSystem.class.getName()).log(Level.SEVERE, null, ex);
                        }
                    
-            
-    
-      /*  }else{
-                           JOptionPane.showMessageDialog(window,
-                      "FireStation disconetted");
-                   }*/
         }
   
     };
@@ -976,6 +972,10 @@ public void net( ){
        timerNET.schedule(task, 0);
         
     }   
+
+//Fire simulation for that we use when we print information to excel. It goes through the entire fire grid
+//and computes how many of them are in the sensing range of the sensors in the system that is connected
+//to the fire station
     public int fireSpread2(MyCanvas canvas){   
  
      canvas.setFire2();
@@ -985,6 +985,8 @@ public void net( ){
      System.out.print("count: " + coverage);
 	return coverage;
   }
+    
+//Fire simulation for shortest path
   public void fireSpreadRouting(MyCanvas canvas,ShortestPathList spl){
       
             TimerTask task = new TimerTask() {
@@ -1001,37 +1003,16 @@ public void net( ){
           
           s=canvas.distanceFireSensor();
           if (s!=null) {
-                    
-                  
-            
+                           
         	  if (CheckSubNetworks.checkSesnorInSubNet(s)){
                            System.out.println("HERE");
                            connected = true;
                
-        		/*  for(int i = 0; i < s.neighbourSensor.size(); i++) {
-        		  if(CheckSubNetworks.checkSesnorInSubNet(s.neighbourSensor.get(i))) {
-        			 connected = true;
-        			 i = s.neighbourSensor.size();
-        		  }  			  
-        		  }*/
                 if(connected==true) {
               SPThread   spT= new SPThread(s);
                      spT.start();
                              
-                                   
-                                   /*   newSP(s, spl);
-                                   //   ShortestPathList.printSP();
-                                   canvas.drawThickLine(s, s_list);
-                                   
-                                   ShortestPathList.n_list.clear();
-                                   ShortestPathList.s_list.clear();
-                                   
-                                   spl.findNeighbors(sensorList);
-                                   
-                                   //initDistances(sensorList);
-                                   
-                                   // canvas.drawLine(s, spl.s_list);
-                               */                    
+                                                      
                 }
            } else {
         	   s.setForwardMsg(true);
@@ -1046,7 +1027,7 @@ public void net( ){
       
     
              
-      
+      //Fire simulation method used for broadcasting
      public void fireSpread(MyCanvas canvas){
      
         TimerTask task = new TimerTask() {
@@ -1071,7 +1052,7 @@ public void net( ){
        tFire.schedule(task, 0,600);
         
     }
-    //Called when you switch mode or reastart the simulation with the restart button 
+    //Called when you switch mode or restart the simulation with the restart button 
      public void Change() {
     	
      // CheckSubNetworks.resetCheckNet();
@@ -1182,9 +1163,6 @@ public void net( ){
       for(int i=0;i<toDraw.size();i++){
           sp=toDraw.get(i);
           MyCanvas.drawThickLine(sp.s, sp.shorthestPath);
-          /*for(Sensor s: sp.shorthestPath){
-              System.out.println(s.getTypeOfSensor());
-          }*/
      }
   }
   

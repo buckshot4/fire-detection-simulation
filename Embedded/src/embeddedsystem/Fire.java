@@ -17,6 +17,7 @@ public class Fire {
     private int positionY;
     private int range;
     
+    //stores fires for the fire grid that we use to analyze coverage
     static  ArrayList<Fire> FireList =new ArrayList();
     
 
@@ -26,11 +27,11 @@ public class Fire {
      this.range=range;   
  }   
  
+ //creates the fire grid based on the size of the forest
  public static ArrayList<Fire> createFireList(){
 
      ArrayList FireList = new ArrayList<> ();
      Fire tempFire = null;
-     Random random= new Random();
      int Xstep = MyCanvas.height/19;
      int Ystep = MyCanvas.width/19;
      for(int i = 0; i < 17; i++) {

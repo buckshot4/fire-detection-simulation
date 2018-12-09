@@ -17,10 +17,10 @@ public class Sensor {
     int x;
     int y;
     String typeOfSensor;
-    int senR;
-    int comR;
-    int detectionR;//detect fire radious
-    boolean active;//works or not
+    int senR; //Sensing range
+    int comR; //Communication range
+    int detectionR; //detect fire radius
+    boolean active; //works or not
     ArrayList<Sensor> neighbourSensor;
     ArrayList<Double> neighborDistance;
     Double[] nd;
@@ -161,10 +161,7 @@ public class Sensor {
         this.setState(true);
         System.out.println(this.typeOfSensor + " just became "+ this.getState());
         
-        //System.out.println("Shortest path ...");
-        
-        
-        
+
         double maxDist = 0;
         
         int rep = 0;
@@ -181,7 +178,7 @@ public class Sensor {
         }
         
         
-        //Check for the disctacnes between the neighbors
+        //Check for the distances between the neighbors
         for(double d : properNeighborDistance){
             if(d > maxDist){
                 maxDist = d;

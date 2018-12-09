@@ -35,6 +35,7 @@ public class MyCanvas {
     static ArrayList<Sensor> SentSensors = new ArrayList();
        private static Fire firegrid;
     private Fire fire;
+    
     static LinkedList<Sensor> queue = new LinkedList<Sensor>(); 
     static LinkedList<Sensor> FireDetectedqueue = new LinkedList<Sensor>(); 
     static ArrayList<Sensor> disconneted;
@@ -131,7 +132,7 @@ public class MyCanvas {
          
      }
      
-  //BraodCasting Method   
+  //Broadcasting Method   
      public static void BCM(Sensor currentSensor, Sensor fs) throws InterruptedException {
    	  if(currentSensor.getState()==true) {
    		  	BC(currentSensor, fs ,currentSensor);   
@@ -184,14 +185,10 @@ public class MyCanvas {
  		//Otherwise it calls the BC method again with the first sensor in the queue. 
  		while(queue.size() !=0) {
  		s=queue.poll();
- 		//System.out.print(s.typeOfSensor+" ");
  		if(s.typeOfSensor.equals(fs.typeOfSensor)) {
                     fillCenteredCircle((Graphics2D) g, s.x,s.y, 7);
      			System.out.println("Reached FS");
-     			System.out.print("fire started at: ");
-     			//setJlabel(firestart.typeOfSensor);
-                       
-                       
+     			System.out.print("fire started at: ");             
  		}  		
  		if(s.getForwardMsg()==false) {
                   
@@ -217,7 +214,6 @@ public class MyCanvas {
      }
      
      //Creates the arrayList of sensors for each mode
-
     public static ArrayList<Sensor> createSensorList2(int width, int height, int senR, int comR, int numOfSensors){
 
                // ArrayList sensorList = new ArrayList<> ();
@@ -247,7 +243,7 @@ public class MyCanvas {
                     }
                 }
                 
-                //total random
+                //completely random
        if(mode==1) {
                     
                     for(int i = 0; i < numOfSensors-3; ++i){
@@ -277,6 +273,7 @@ public class MyCanvas {
                 
                 int midX = width/2;
                 int midY = height/2;
+                
                 //semi random
                 if(mode==2) {
                     
@@ -291,8 +288,7 @@ public class MyCanvas {
                     		preX = midX+w; 
                     		preY = midY+h;          	
                     	}                             	
-                    	//int w = random.nextInt(comR/2-senR/2)+senR/3;
-                    	//int h = random.nextInt(comR/2-senR/2)+senR/3;     
+  
                             tempSensor = new Sensor(preX, preY, "s" + Integer.toString(name), senR, comR+n); 
                         	preX = preX+w;
                         	preY = preY+h;
@@ -347,7 +343,8 @@ public class MyCanvas {
                 
                 int w = 0;
                 int h = 0;
-                
+            
+           //SEMI RANDOM SECTION
            if(mode==4) { 
                 	
                 	while (name < numOfSensors-3) {
@@ -387,6 +384,7 @@ public class MyCanvas {
                     sensorList.add(tempSensor); 
                 }
              
+                //OPTIMAL GRID
                  if(mode==5){
     
                 for(int x = 25; x < width-25; x = x + step){
@@ -418,12 +416,10 @@ public class MyCanvas {
                     
                 
                  }
-                
-                
-                   
- 
+
                 return sensorList;
             }
+    
 //used to display the message sent if the networks implements the routing protocol
       public static void drawThickLine(Sensor s,ArrayList<Sensor> l){
             Graphics g = surface.getGraphics();
@@ -616,7 +612,8 @@ public class MyCanvas {
          g.drawOval(x,y,r,r);
     }
      
-     
+     //calculates distance between fire and sensor for shortest path and broadcasting
+     //and returns sensors that have detected fire
      public Sensor distanceFireSensor(){
     	 Sensor sp=null;
     	 Sensor s=null;
@@ -629,33 +626,24 @@ public class MyCanvas {
          double d2Y = otherSensor.y;
          int fireRange=fire.getRange();
         int fireDetected=(int)((fireRange/2)+(otherSensor.senR/2));
-        //System.out.println("");
-         
+    
          double distance = Math.sqrt(Math.pow(d1X-d2X,2) + Math.pow(d1Y-d2Y,2));
-          /* System.out.println("DistanceF:"+ fire.getRange()/2);
-               System.out.println("DistanceS:"+ otherSensor.radious/2);
-         System.out.println("Distance:"+distance+"  FireD:"+fireDetected);
-         */
+
          DecimalFormat df = new DecimalFormat("#.###");
          df.setRoundingMode(RoundingMode.CEILING);
-        // System.out.println("d1=("+ d1X + ","+ d1Y + " and d2=(" + d2X + "," + d2Y + ")");
-         //System.out.println("Distance is :" + df.format(distance));
-         //if(!CheckSubNetworks.myContains(otherSensor, SentSensors)) {
-         //if(!SentSensors.contains(otherSensor)) {
+
          if(fireDetected>(distance+10) && otherSensor.getForwardMsg()==false && otherSensor.getState()==true){
         	 s= otherSensor;
         	 if(!SentSensors.contains(s)) {
         	 SentSensors.add(s);
         	 FireDetectedqueue.add(s);
         	 }
-             //return s;
          }
          }
-        // }
          return FireDetectedqueue.poll();
       }
       
-        
+     //used to calculate the distance between sensors and the fire grid and returns sensors that have detected fire.   
      public int distanceFireSensor2(){
     	 FireDetectedqueue2.clear();
     	 int count = 0;
@@ -699,6 +687,8 @@ public class MyCanvas {
          }
          return FireDetectedqueue2.size();
          }
+     
+     //used for random fire
      public void setFire(){
           
           Graphics g = surface.getGraphics();
@@ -719,6 +709,7 @@ public class MyCanvas {
             view.repaint();
      }
      
+     //used to implement the fire grid
       public void setFire2(){
     	 ArrayList<Fire> FireList = Fire.createFireList();
          for(int j = 0; j < FireList.size(); j++) {      

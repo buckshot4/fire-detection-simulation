@@ -21,6 +21,7 @@ public class WriteExcel {
 	
 	static  ArrayList<Sensor> sensorList = new ArrayList();
 	
+	//method used for printing sensor information ("Print excel" button)
 	public WriteExcel(ArrayList<Sensor> list) {
 		
 	sensorList = list;
@@ -28,7 +29,7 @@ public class WriteExcel {
 	try {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 	
-	HSSFSheet sheet = workbook.createSheet("List products");
+	HSSFSheet sheet = workbook.createSheet("Sensor Information");
 	
 	//Create Heading
 	Row rowHeading = sheet.createRow(0);
@@ -90,7 +91,7 @@ public class WriteExcel {
 	}
 	
 	//save to excel file
-	FileOutputStream out = new FileOutputStream(new File("listProducts.xls"));
+	FileOutputStream out = new FileOutputStream(new File("SensorInformation.xls"));
 	workbook.write(out);
 	out.close();
 	workbook.close();
@@ -101,6 +102,7 @@ System.out.println(e.getMessage());
 }
 
 }
+	//Prints information about subnet. It is not used. 
 	public static void PrintConnectedNetwork(int connectedsensors, ArrayList<subNet> subNetList) {
 		
 		try {
@@ -174,6 +176,7 @@ System.out.println(e.getMessage());
 
 	}
 	
+	//Method used for printed information to excel when pressing button "Print to Excel"
 public static void PrintConnectedNetwork2(ArrayList<Integer> AmountOfSensors, ArrayList<Integer> FailedSensors , ArrayList<Integer> ConnectedSensors, ArrayList<Integer> Disconnected, ArrayList<Integer> subNetList, ArrayList<Integer> CoverageList) {
 		
 		try {
@@ -209,7 +212,6 @@ public static void PrintConnectedNetwork2(ArrayList<Integer> AmountOfSensors, Ar
 		for(int i = 0; i < AmountOfSensors.size(); i++) {
 			Row row = sheet.createRow(r);
 			
-			//Sensor name Column
 			Cell cellQuantity= row.createCell(0);
 			cellQuantity.setCellValue(AmountOfSensors.get(i));
 			
@@ -217,18 +219,14 @@ public static void PrintConnectedNetwork2(ArrayList<Integer> AmountOfSensors, Ar
 			Cell cellFailedSensors= row.createCell(1);
 			cellFailedSensors.setCellValue(FailedSensors.get(i));
 			
-			//State Column
 			Cell cellName = row.createCell(2);
 			cellName.setCellValue(ConnectedSensors.get(i));
 			
-			//message Column
 			Cell cellDisconnected= row.createCell(3);
 			cellDisconnected.setCellValue(Disconnected.get(i));
 			
-			//Forward message Column
 			Cell cellSubTotal= row.createCell(4);
 			cellSubTotal.setCellValue(subNetList.get(i));
-			
 			
 			Cell cellCoverage= row.createCell(5);
 			cellCoverage.setCellValue(CoverageList.get(i));
@@ -256,84 +254,5 @@ public static void PrintConnectedNetwork2(ArrayList<Integer> AmountOfSensors, Ar
 	}
 
 	}
-
-public static void PrintCoverage(ArrayList<Integer> AmountOfSensors, ArrayList<Integer> FailedSensors, ArrayList<Integer> ConnectedSensors, ArrayList<Integer> Disconnected, ArrayList<Integer> subNetList) {
-	
-	try {
-		HSSFWorkbook workbook = new HSSFWorkbook();
-		
-		HSSFSheet sheet = workbook.getSheet("Subnets");
-	    if (sheet == null)
-	        sheet = workbook.createSheet("Subnets");
-	
-	//Create Heading
-	Row rowHeading = sheet.createRow(0);
-	rowHeading.createCell(0).setCellValue("Amount Of Sensors");
-	rowHeading.createCell(1).setCellValue("Amount Of Failed Sensors");
-	rowHeading.createCell(2).setCellValue("Connected Sensors");
-	rowHeading.createCell(3).setCellValue("Disconnected Sensors");
-	rowHeading.createCell(4).setCellValue("Amount of Subnetworks");
-
-	for(int i = 0; i<5; i++)
-	{
-		CellStyle stylerowHeading = workbook.createCellStyle();
-		Font font = workbook.createFont();
-		font.setBold(true);
-		font.setFontName(HSSFFont.FONT_ARIAL);
-		font.setFontHeightInPoints((short) 11);
-		stylerowHeading.setFont(font);
-		stylerowHeading.setVerticalAlignment(VerticalAlignment.CENTER);
-		rowHeading.getCell(i).setCellStyle(stylerowHeading);
-		
-		
-}
-	
-	for(int i = 0; i < AmountOfSensors.size(); i++) {
-		Row row = sheet.createRow(r);
-		
-		//Sensor name Column
-		Cell cellQuantity= row.createCell(0);
-		cellQuantity.setCellValue(AmountOfSensors.get(i));
-		
-		//Failed Sensors Column
-		Cell cellFailedSensors= row.createCell(1);
-		cellFailedSensors.setCellValue(FailedSensors.get(i));
-		
-		//State Column
-		Cell cellName = row.createCell(2);
-		cellName.setCellValue(ConnectedSensors.get(i));
-		
-		//message Column
-		Cell cellDisconnected= row.createCell(3);
-		cellDisconnected.setCellValue(Disconnected.get(i));
-		
-		//Forward message Column
-		Cell cellSubTotal= row.createCell(4);
-		cellSubTotal.setCellValue(subNetList.get(i));
-		
-
-		
-		
-		r++;
-	}
-	
-	//Autofit
-	for(int i = 0; i<6; i++) {
-		sheet.autoSizeColumn(i);
-	}
-	
-	//save to excel file
-	FileOutputStream out = new FileOutputStream(new File("Subnets.xls"));
-	workbook.write(out);
-	out.close();
-	workbook.close();
-	System.out.println("Excel written successfully..");
-	
-} catch (Exception e) {
-System.out.println(e.getMessage());
-}
-
-}
-
 }
 

@@ -13,10 +13,12 @@ import java.util.Arrays;
 public class GridSP {
     Sensor firstSensor;
     
+    // constructor
     public GridSP(Sensor s){
         firstSensor =s;
     }
     
+    // gets the distance between the sensors in a list
     public static void initDistances(ArrayList<Sensor> sensorList){
         
         
@@ -44,6 +46,7 @@ public class GridSP {
         
     }
     
+    // prints the distances between the sensors
     public static void printAllDistances(ArrayList<Sensor> sensorList){
         
         
@@ -55,7 +58,7 @@ public class GridSP {
         
     }
     
-
+    // calculates the hops for all the sensors from the firestation
     public static void hopsCalculation(Sensor s){
         ArrayList<Sensor> neighbors = new ArrayList<>();
         neighbors = s.neighbourSensor;
@@ -77,6 +80,7 @@ public class GridSP {
         }
     }
     
+ // calculates the ShorstestPath based on the hops from the firestation
  public static void newSP(Sensor sensor, ShortestPathList spl){
         
         // make sensor true = transmitiong message
@@ -94,7 +98,7 @@ public class GridSP {
         }
         System.out.println("ACTIVE "+activeNeighbors.size());
          
-        
+        // checks closest neighbor's hop with active state
         for(Sensor s : activeNeighbors){
             if(s.hops < bestHop && s.getState()&& (s.getForwardMsg()!=true)){
                 bestHop = s.hops;
@@ -112,7 +116,7 @@ public class GridSP {
         // add the closest neighbor to the Shortest path
         ShortestPathList.addSensorToPath(closestNeighbor);
         
-        // Recirsion - continue with the neighbors of the closest sensor and so on
+        // Recursion - continue with the neighbors of the closest sensor and so on
         if(!closestNeighbor.typeOfSensor.equals("fs")){
             newSP(closestNeighbor, spl);
         }else{
@@ -124,7 +128,7 @@ public class GridSP {
     }
     
     
-   
+  // tread implementation of ShortestPath
   public  void newSPThread(Sensor sensor, ArrayList<Sensor> list){
         
         // make sensor true = transmitiong message
@@ -170,6 +174,8 @@ public class GridSP {
         
         
     }
+  
+    // print hops for all sensors in the list
     public static void printHops(ArrayList<Sensor> list){
         
         for(Sensor s : list){
@@ -179,6 +185,7 @@ public class GridSP {
         
     }
     
+    //print neighbors for a given sensor
     public static void printN(Sensor s){
         for(Sensor n : s.neighbourSensor){
             System.out.print(n.typeOfSensor + " ");
