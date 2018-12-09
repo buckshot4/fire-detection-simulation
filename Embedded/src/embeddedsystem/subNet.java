@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+Class that define the object sub network as an arrayList of sensors that are componing the subNetwork
+and a boolean that defines if the subnetwork is connected somehow to the fire station
  */
 package embeddedsystem;
 

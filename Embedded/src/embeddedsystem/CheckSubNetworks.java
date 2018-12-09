@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+This class analyze the network looking for possible cuts that wouldn't allowed the message to be received by the fire station 
  */
 package embeddedsystem;
 

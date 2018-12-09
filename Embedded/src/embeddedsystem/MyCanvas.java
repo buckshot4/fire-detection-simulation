@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ *This class takes care of every graphic aspect of the simulation
  */
 package embeddedsystem;
 
@@ -57,17 +55,14 @@ public class MyCanvas {
         Random r= new Random();
         
         fire= new Fire(r.nextInt(750)+50,r.nextInt(650)+50,20);
-        surface = new BufferedImage(800,700,BufferedImage.TYPE_INT_RGB);
+        surface = new BufferedImage(600,600,BufferedImage.TYPE_INT_RGB);
         
         view = new JLabel(new ImageIcon(surface));
       
         Graphics g = surface.createGraphics();
-           
-            
-         g.setColor(Color.WHITE);
-        g.fillRect(0,0,800,700);
-      
-       
+
+        g.setColor(Color.WHITE);
+        g.fillRect(0,0,600,600);
         g.dispose();
     }
 
@@ -136,7 +131,7 @@ public class MyCanvas {
          
      }
      
-     
+  //BraodCasting Method   
      public static void BCM(Sensor currentSensor, Sensor fs) throws InterruptedException {
    	  if(currentSensor.getState()==true) {
    		  	BC(currentSensor, fs ,currentSensor);   
@@ -221,69 +216,9 @@ public class MyCanvas {
          
      }
      
-    public static ArrayList<Sensor> createSensorList(int width, int height, int radious){
+     //Creates the arrayList of sensors for each mode
 
-        ArrayList sensorList = new ArrayList<> ();
-        Sensor tempSensor = null;
-        
-        //here we select 50 as every 50 meters we put a sensor
-        int step = 50;
-        int name = 0;
-        
-        for(int w = step; w < width; w = w + step){
-            for(int h = step; h < height; h = h +step){
-                if((w == width-step) && (h == height-step) ){
-                    tempSensor = new Sensor(w+100, h+100, "fs",radious,0);
-                    
-                }
-                else{
-                    tempSensor = new Sensor(w+100, h+100, "s" + Integer.toString(name),radious,0);
-                }
-                tempSensor.setState(true);
-                
-                sensorList.add(tempSensor);
-                name ++;
-            }
-        }
-        
-        
-        return sensorList;
-    }
-         
-         public static ArrayList<Sensor> createRandomSensorList(int width, int height, int radious){
-
-        ArrayList<Sensor> sensorRandomList = new ArrayList<> ();
-        Sensor tempSensor = null;
-        
-        //here we select 50 as every 50 meters we put a sensor and plus some random meters
-        int step = 50;
-        int name = 0;
-        int rand = 0;
-        Random r = new Random();
-        
-        for(int w = step; w < width; w = w + step + rand){
-            for(int h = step; h < height; h = h +step + rand){
-              
-                    tempSensor = new Sensor(w, h, "s" + Integer.toString(name),radious,0);
-                    name ++;
-               
-                //tempSensor.setState(false);
-                rand = r.nextInt(10-0) + 0;
-                
-                sensorRandomList.add(tempSensor);
-                
-            }
-        }
-        sensorRandomList.get(sensorRandomList.size()-1).setTypeOfSensor("fs");
-        
-        
-        
-        
-        return sensorRandomList;
-    }
-         
-         
-                  public static ArrayList<Sensor> createSensorList2(int width, int height, int senR, int comR, int numOfSensors){
+    public static ArrayList<Sensor> createSensorList2(int width, int height, int senR, int comR, int numOfSensors){
 
                // ArrayList sensorList = new ArrayList<> ();
                 Sensor tempSensor = null;
@@ -454,10 +389,10 @@ public class MyCanvas {
              
                  if(mode==5){
     
-                for(int x = 0; x < width-step; x = x + step){
-                    for(int y = 0; y < height-step; y = y +step){
+                for(int x = 25; x < width-25; x = x + step){
+                    for(int y = 25; y < height-25; y = y +step){
                     	int n = random.nextInt(comR/5);
-                        if((x == width-(step*2)) && (y == height-(step*2)) ){
+                        if((x == width-(step+25)) && (y == height-(step+25)) ){
                             tempSensor = new Sensor(x, y, "fs", senR, comR+n);                  
                         }
                         else{
@@ -476,6 +411,7 @@ public class MyCanvas {
                     for(int i=0;i<sensorList.size();i++){
                       if( FileInport.values[4][i]==0){
                           sensorList.get(i).setState(false);
+                          failedS.add(sensorList.get(i));
                       }
            
                      }
@@ -488,27 +424,24 @@ public class MyCanvas {
  
                 return sensorList;
             }
-         
+//used to display the message sent if the networks implements the routing protocol
       public static void drawThickLine(Sensor s,ArrayList<Sensor> l){
             Graphics g = surface.getGraphics();
             int thickness=5;
           g.setColor(Color.BLUE);
-       //   int x1,x2,y1,y2,dX,dY;
-         // double lineLength,scale,ddy,ddx,dx,dy;
-           //  int xPoints[] = new int[4];
-             //        int yPoints[] = new int[4];
+   
                 int x1=(s.getPositionX());
                   int x2=  (l.get(0).getPositionX()); 
                   int y2=(l.get(0).getPositionY());
                   int y1=(s.getPositionY());
                 int dX = x2 - x1;
                 int dY = y2 - y1;
-             // line length
+            
                      double lineLength = Math.sqrt(dX * dX + dY * dY);
 
                      double scale = (double)(thickness) / (2 * lineLength);
 
-             // The x,y increments from an endpoint needed to create a rectangle...
+          
                      double ddx = -scale * (double)dY;
                     double ddy = scale * (double)dX;
                     ddx += (ddx > 0) ? 0.5 : -0.5;
@@ -516,7 +449,6 @@ public class MyCanvas {
                      int dx = (int)ddx;
                      int dy = (int)ddy;
 
-                 // Now we can compute the corner points...
                      int xPoints[] = new int[4];
                      int yPoints[] = new int[4];
 
@@ -534,12 +466,12 @@ public class MyCanvas {
                              y1=(l.get(i).getPositionY());
                              dX = x2 - x1;
                             dY = y2 - y1;
-             // line length
+      
                              lineLength = Math.sqrt(dX * dX + dY * dY);
 
                              scale = (double)(thickness) / (2 * lineLength);
 
-             // The x,y increments from an endpoint needed to create a rectangle...
+           
                              ddx = -scale * (double)dY;
                               ddy = scale * (double)dX;
                              ddx += (ddx > 0) ? 0.5 : -0.5;
@@ -547,7 +479,7 @@ public class MyCanvas {
                              dx = (int)ddx;
                              dy = (int)ddy;
                          
-                 // Now we can compute the corner points...
+                
                   
 
                      xPoints[0] = x1 + dx; yPoints[0] = y1 + dy;
@@ -557,57 +489,14 @@ public class MyCanvas {
 
                      g.fillPolygon(xPoints, yPoints, 4);
                      }
-                     
-                     
-                     
-                         g.dispose();
+        
+        g.dispose();
         view.repaint();
           
       }
      
-      
-      public void drawDashedOval( int x, int y, int r) {
-      
-         Graphics g = surface.getGraphics();
-        Graphics2D g2d = (Graphics2D) g.create();
-
-        
-        float fl[] = { 12.0f };
-        BasicStroke basicStroke = new BasicStroke(2.0f,
-         BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 12.0f,
-             fl, 0.0f);
-
-             g2d.setPaint(Color.RED);
-             g2d.setStroke(basicStroke);
-             g2d.draw(new Ellipse2D.Double(x, y, r, r));
-
-        
-        //set the stroke of the copy, not the original 
-       // Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
-     
-
-
-        //gets rid of the copy
-        g.dispose();
-         view.repaint();
-      }
-      
-    public static void drawLine(Sensor s,ArrayList<Sensor> l){
-         
-         Graphics g = surface.getGraphics();
-       
-          g.setColor(Color.GREEN);
-        
-         // g.drawLine(s.x,s.y,l.get(0).getPositionX(),l.get(0).getPositionY());
-           //     System.out.println("DRAW FIRST LINE"+ s.getTypeOfSensor()+"  "+l.get(0).getTypeOfSensor());
-          for(int i=0;i<l.size()-1;i++){
-              System.out.println("DRAWLINE"+ l.get(i).getTypeOfSensor()+"  "+l.get(i+1).getTypeOfSensor());
-           g.drawLine(l.get(i).getPositionX(), l.get(i).getPositionY(), l.get(i+1).getPositionX(), l.get(i+1).getPositionY());
-          }
-        g.dispose();
-        view.repaint();
-     }
-     
+  
+  //Used to change the sensing range and display the change in the canvas   
      public void weatherChange(int power){
            Graphics g = surface.getGraphics();
          Sensor s;
@@ -617,7 +506,9 @@ public class MyCanvas {
             ShortestPathList.s_list.clear();
                     
          for(int i=0;i<sensorList.size(); i++){
+           
          s=sensorList.get(i);
+          s.neighbourSensor.clear();
          s.setComRange(s.comR-power);
         // drawCenteredCircle ((Graphics2D) g,s.getPositionX(),s.getPositionY(), (s.ratio-power));
          }
@@ -626,17 +517,17 @@ public class MyCanvas {
           g.dispose();
             view.repaint();
      }
+     
+     //Redraw a white canvas
      public void resetCanvas(){
          Graphics g = surface.getGraphics();
          Sensor s;
          g.setColor(Color.WHITE);
         g.fillRect(0,0,800,700);
          drawSensor();
-        
-       
-        
+   
      }
-     
+     //Used to change the layout of the network based on the selected mode
     public void changeSensorList(int number){
           sensorList.clear();
               Graphics g = surface.getGraphics();
@@ -660,7 +551,7 @@ public class MyCanvas {
          
     }
 
-    
+    // It draws the sensor in the sensorList array as black points inside 2 concentric circles, the sensing range and the comunication range
      public void drawSensor(){
           Graphics g = surface.getGraphics();
          Sensor s;
@@ -694,6 +585,7 @@ public class MyCanvas {
            g.dispose();
          view.repaint();  
      }
+    // It changes the color of the sensors that are failed to red
     public void drawFailedSensors () {
     	 Graphics g = surface.getGraphics();
          Sensor s;
@@ -815,12 +707,12 @@ public class MyCanvas {
         drawCenteredCircle((Graphics2D) g,fire.getPositionX(),fire.getPositonY(),fire.getRange());
          if(fireStop ==false)
          {
-        	 //System.out.println("fuck");
+        	
          fire.setRange((fire.getRange()+20));
      }
          else 
          {
-        	 //System.out.println("fuckfuck");
+        	 
         	fire.setRange((fire.getRange()));
      }
             g.dispose();
@@ -839,10 +731,11 @@ public class MyCanvas {
          view.repaint();
          }
     }
+      
+      
+   //Used to fail random sensors    
         public static void randomFail(int howMany){
-        
-        
-          
+   
         int number=0;
         Graphics g = surface.getGraphics();
         g.setColor(Color.RED);

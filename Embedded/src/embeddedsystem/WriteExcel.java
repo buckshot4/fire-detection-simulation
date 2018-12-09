@@ -1,3 +1,7 @@
+
+/*
+Class used to create an excel file where the information about the connectivity and the coverage of the system in different situation would be store.
+*/
 package embeddedsystem;
 
 
